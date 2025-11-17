@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cac:AwardingTerms>
+    <cac:AwardingCriteria>
+        <cbc:ID>2372990</cbc:ID>
+        <cbc:AwardingCriteriaTypeCode>OBJ</cbc:AwardingCriteriaTypeCode>
+        <cbc:Description>Criterios cualitativos</cbc:Description>
+        <cbc:WeightNumeric>20</cbc:WeightNumeric>
+    </cac:AwardingCriteria>
+    <cac:AwardingCriteria>
+        <cbc:ID>2372988</cbc:ID>
+        <cbc:AwardingCriteriaTypeCode>OBJ</cbc:AwardingCriteriaTypeCode>
+        <cbc:Description>Oferta económica</cbc:Description>
+        <cbc:AwardingCriteriaSubTypeCode>Precio</cbc:AwardingCriteriaSubTypeCode>
+        <cbc:WeightNumeric>80</cbc:WeightNumeric>
+    </cac:AwardingCriteria>
+</cac:AwardingTerms>

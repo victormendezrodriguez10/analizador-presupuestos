@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CallForTenders xmlns:cbc="urn:dgpe:names:draft:codice:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cac="urn:dgpe:names:draft:codice:schema:xsd:CommonAggregateComponents-2" xmlns="urn:dgpe:names:draft:codice:schema:xsd:CallforTenders-2" xmlns:cbc-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonBasicComponents-2" xmlns:cac-place-ext="urn:dgpe:names:draft:codice-place-ext:schema:xsd:CommonAggregateComponents-2">
+    <cbc:UBLVersionID>2.3</cbc:UBLVersionID>
+    <cbc:CustomizationID>CODICE 2.8.0</cbc:CustomizationID>
+    <cbc:ProfileID>CiP 2.1</cbc:ProfileID>
+    <cbc:ID>0000017067915</cbc:ID>
+    <cbc:UUID>2025-001059975</cbc:UUID>
+    <cbc:ContractFolderID>602025PA9307</cbc:ContractFolderID>
+    <cbc:IssueDate>2025-09-22+02:00</cbc:IssueDate>
+    <cbc:IssueTime>10:31:31.321</cbc:IssueTime>
+    <cac:LegalDocumentReference>
+        <cbc:ID schemeName="ID_DOC_PLACE">03 PCAP seguridad y contraincendios V2.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209082203 PCAP seguridad y contraincendios V2.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=yDDZ3yNnBWKxze9K0tdt2ErViYP5Se%2BdcpBJ6EBRmOglNLkeRwOWZ%2BhS5O%2Bz2zyt87m8WgX6aHEoIvJ8qvpfWCoNliR32UiAeV%2BQ245GPDxJOVDbGCDM%2BMigrvuVS7Rv&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>j6QTlB2o6/FmkoGxicE3M6JSwJ4=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:LegalDocumentReference>
+    <cac:TechnicalDocumentReference>
+        <cbc:ID schemeName="ID_DOC_PLACE">04 PPT seguridad y contraincendios V2.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209075804 PPT seguridad y contraincendios V2.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=/cnnvTl09Xdy2V0D17rQLlzYTBhr7Bh6YJcBH7oInViZ/q3XGW0txHoXcImC/E0CGZRaFUMF%2BBc6fR33a%2BsTeEGMdF30PQaVATeX4v7aTRxt/o8fNevwsujgRzaBbugn&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>cCbxdYEKA3pTWu7kJc+tgOfGebA=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:TechnicalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>08 20210301 PT Servicios Abierto.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209265508 20210301 PT Servicios Abierto.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=C8XkpiTbmOQigqxfwRUpaCILGtUzX/m2oe0/q2Qme6oCkg%2BeSnBlPFbBmE1g2qy3SeIdKNJrhsQWWluuUiCvlHEIZV7MGCZUTkoEl5ksdoaB0nvVKRzfe4rpHcnlPhSZ&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>zIfJuqeOKzuTicBeIorRdQ48PTk=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>09 Informe SEJU PT SERVICIOS PA.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209271209 Informe SEJU PT SERVICIOS PA.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=guvJrzZs3hQunCRLS3NS/AwW%2BtYZv%2BKlmYCxp28jaXq9MoVOzUBuN7F6TOUxV7HJV7FT6W3BVvkSo7DhghPbbg6YJ6t6EotqZSAJCBEXTsn3GVhXrFFqN7yFncy7YfRK&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>S9bXUBi11oM7Lgksm1XEAp8oOwY=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>10 Resolucion rectificacion de PT 20210301 fdo.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209272710 Resolucion rectificacion de PT 20210301 fdo.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=P3OCLAlulW%2BQ%2BDVIuYqKxoWlScXyB3Abkr1b0Pk2DnNrI6Id0q0RJiUPbQfSeNIqt1blDxBIUuNBl%2BKVYv9ysmlOe/feqnw0Cd82QlfUMbdJOVDbGCDM%2BMigrvuVS7Rv&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>muOz31/j/jyMihzYZoC1n2e8Ids=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>11 Informe SEJU Resolucion rectificacion de PT 20210301.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC2025092209274411 Informe SEJU Resolucion rectificacion de PT 20210301.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=6aynj/sQNT7eDOdKk3OKW9nBXmaQxcFy%2BnLWjO8cE7MCqHa7THaa/%2Bi6JgKFQYln%2BrZzqssQtxWZ70ALi7tWe%2BnG1IttV7UIl%2BTIUUyJThoC1/zDIE0Kw/PWNnLS0Z0z&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>izrsYF/JA6xWHkCABuXfI3F6IsY=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>Anexo Criterios cualitativos.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC20250922092346Anexo Criterios cualitativos.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=r%2Bvhzy82MEIC0eOi/WnRcnL1W2QbW9Jwtws5oVnXIKaYP5cKHmFpS6dpngInjrMTXMjjCezUvAnfdj0iPvo%2BKtJkdy03HCNrwDkTpmyCHErDdQD9RyhUmzT4jZ2In4zL&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>Rr+mzM7VRoMTBZ1EPcW9iGV9Lcw=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>Anexo DR.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC20250922092357Anexo DR.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=aVdJ8kFRgWk0xTI2EorAKr%2BeAa7o2%2B9g1RpyP9t/xiKZXU7ssp9nijkcoXJJYDQPgBSQFU/Z9BVhxkyMsQvGaGbnXd5CNvIIQZqtWNi9A4N7QB3HKyQaFUExmUVQCerk&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>/JYHXt/s8IrW2Yyeu1UOaCqGNeU=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>Anexo Oferta economica.pdf</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC20250922092411Anexo Oferta economica.pdf</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=7LNfvw0rt/OmbSD1Sv5vtgM/nCIQj/Lz3iYEvRvm9PoPRdnQi9xG0HpInK87blI6PzJYtWAlNjnCvArwXFbmVtYNSGnX7OuCUFsj1LKR53nDdQD9RyhUmzT4jZ2In4zL&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>ZQwOAvdJzB+SupyPtj2i6nPo+lQ=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>Anexos Oferta Economica AM Mtos.xlsx</cbc:ID>
+        <cbc:CopyIndicator>false</cbc:CopyIndicator>
+        <cbc:UUID>DOC20250922101237Anexos Oferta Economica AM Mtos.xlsx</cbc:UUID>
+        <cac:Attachment>
+            <cac:ExternalReference>
+                <cbc:URI>https://contrataciondelestado.es/FileSystem/servlet/GetDocumentByIdServlet?DocumentIdParam=klyIr4inzM6ubDwV1wVt/r3ay6jXK7SxIuQhT/atq/lKscJ/DG74XAtc3bfTVrgkEIxGKDC4FDIXyOphM%2BBNnFlzCPkhs40fTZV1B5HIBZC1aXEvq3KHa/AEHgtDrQw0&amp;cifrado=QUC1GjXXSiLkydRHJBmbpw%3D%3D</cbc:URI>
+                <cbc:DocumentHash>bAWnOIPIQ4diO7fsiGdN62KzRLk=</cbc:DocumentHash>
+            </cac:ExternalReference>
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:ContractingParty>
+        <cbc:ContractingPartyTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ContractingAuthorityCode-2.10.gc" languageID="es" name="Autoridad estatal" listVersionID="2.10">1</cbc:ContractingPartyTypeCode>
+        <cbc:ActivityCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ContractingAuthorityActivityCode-2.10.gc" languageID="es" name="Servicios públicos generales" listVersionID="2.10">1</cbc:ActivityCode>
+        <cbc:ActivityCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ContractingAuthorityActivityCode-2.10.gc" languageID="es" name="Protección social" listVersionID="2.10">10</cbc:ActivityCode>
+        <cbc:ActivityCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ContractingAuthorityActivityCode-2.10.gc" languageID="es" name="Salud" listVersionID="2.10">7</cbc:ActivityCode>
+        <cbc:BuyerProfileURIID>https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&amp;idBp=jxohU4PHBmkQK2TEfXGy%2BA%3D%3D</cbc:BuyerProfileURIID>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="ID_PLATAFORMA">10000400052822</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyIdentification>
+                <cbc:ID schemeName="NIF">Q2869056H</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Instituto Social de la Marina</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28004</cbc:PostalZone>
+                <cbc:CountrySubentity>Madrid</cbc:CountrySubentity>
+                <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.12/NUTS-2024.gc" name="Madrid" listVersionID="2.12">ES300</cbc:CountrySubentityCode>
+                <cac:AddressLine>
+                    <cbc:Line>Génova 24</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:Name>Instituto Social de la Marina</cbc:Name>
+                <cbc:Telephone>917006838</cbc:Telephone>
+                <cbc:ElectronicMail>contratacion.administrativa.ism@seg-social.es</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:JobTitle>Directora del Instituto Social de la Marina</cbc:JobTitle>
+            </cac:Person>
+        </cac:Party>
+    </cac:ContractingParty>
+    <cac:TenderingTerms>
+        <cbc:RequiredCurriculaIndicator>false</cbc:RequiredCurriculaIndicator>
+        <cbc:VariantConstraintIndicator>false</cbc:VariantConstraintIndicator>
+        <cbc:PriceRevisionFormulaDescription>No habrá lugar a revisión de precios</cbc:PriceRevisionFormulaDescription>
+        <cbc:FundingProgramCode listURI="http://contrataciondelestado.es/codice/cl/2.08/FundingProgramCode-2.08.gc" languageID="es" name="No hay financiación con fondos de la UE" listVersionID="2.08">NO-EU</cbc:FundingProgramCode>
+        <cbc:MaximumAdvertisementAmount currencyID="EUR">0</cbc:MaximumAdvertisementAmount>
+        <cbc:EcatalogIndicator>false</cbc:EcatalogIndicator>
+        <cbc:EorderingIndicator>false</cbc:EorderingIndicator>
+        <cbc:EpaymentMeansIndicator>false</cbc:EpaymentMeansIndicator>
+        <cbc:ProcurementNationalLegislationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ProcurementNationalLegislationCode-2.08.gc" languageID="es" name="Ley 9/2017" listVersionID="2.08">3</cbc:ProcurementNationalLegislationCode>
+        <cbc:CVDScopeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/CVDScope-2.10.gc" languageID="es" name="No aplica la Directiva de Vehículos Limpios" listVersionID="2.10">no-CVD</cbc:CVDScopeCode>
+        <cac:ProcurementLegislationDocumentReference>
+            <cbc:ID>2014/24/EU</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:UUID>2014/24/EU</cbc:UUID>
+        </cac:ProcurementLegislationDocumentReference>
+        <cac:TendererQualificationRequest>
+            <cac:TechnicalEvaluationCriteria>
+                <cbc:EvaluationCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/TechnicalCapabilityTypeCode-2.0.gc" name="Otros" listVersionID="2.0">ZZZ</cbc:EvaluationCriteriaTypeCode>
+                <cbc:Description>Declaración responsable</cbc:Description>
+            </cac:TechnicalEvaluationCriteria>
+            <cac:SpecificTendererRequirement>
+                <cbc:RequirementTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.08/DeclarationTypeCode-2.08.gc" languageID="es" name="Capacidad de obrar" listVersionID="2.08">1</cbc:RequirementTypeCode>
+                <cbc:Description>Según cláusula 7.3 del PCAP</cbc:Description>
+            </cac:SpecificTendererRequirement>
+        </cac:TendererQualificationRequest>
+        <cac:AllowedSubcontractTerms>
+            <cbc:UnknownPriceIndicator>true</cbc:UnknownPriceIndicator>
+            <cbc:Description>Según cláusula 15 del PCAP</cbc:Description>
+        </cac:AllowedSubcontractTerms>
+        <cac:TenderPreparation>
+            <cbc:TenderEnvelopeID>Sobre Único PAS</cbc:TenderEnvelopeID>
+            <cbc:TenderEnvelopeTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.08/TenderEnvelopeTypeCode-2.08.gc" languageID="es" name="Documentación administrativa y criterios cuantificables automáticamente" listVersionID="2.08">10</cbc:TenderEnvelopeTypeCode>
+            <cbc:OpenEventID>Apertura Sobre Único PAS</cbc:OpenEventID>
+            <cbc:Description>Según cláusula 7.3 del PCAP</cbc:Description>
+            <cac:DocumentTenderRequirement>
+                <cbc:RequiredSignatureIndicator>true</cbc:RequiredSignatureIndicator>
+                <cbc:MandatoryIndicator>false</cbc:MandatoryIndicator>
+                <cac:TemplateDocumentReference>
+                    <cbc:ID>Oferta económica</cbc:ID>
+                </cac:TemplateDocumentReference>
+            </cac:DocumentTenderRequirement>
+        </cac:TenderPreparation>
+        <cac:ContractExecutionRequirement>
+            <cbc:Name>Sometimiento del contratista a la normativa de protección de datos</cbc:Name>
+            <cbc:ExecutionRequirementCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ExecutionRequirementCode-2.08.gc" languageID="es" name="Sometimiento del contratista a la normativa de protección de datos" listVersionID="2.08">8</cbc:ExecutionRequirementCode>
+            <cbc:Description>Según cláusula 11.12 del PCAP</cbc:Description>
+        </cac:ContractExecutionRequirement>
+        <cac:ContractExecutionRequirement>
+            <cbc:Name>Cumplimiento de las Convenciones fundamentales de la Organización Mundial del Trabajo</cbc:Name>
+            <cbc:ExecutionRequirementCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ExecutionRequirementCode-2.08.gc" languageID="es" name="Cumplimiento de las Convenciones fundamentales de la Organización Mundial del Trabajo" listVersionID="2.08">7</cbc:ExecutionRequirementCode>
+            <cbc:Description>Según cláusula 11.12 del PCAP</cbc:Description>
+        </cac:ContractExecutionRequirement>
+        <cac:ContractExecutionRequirement>
+            <cbc:Name>Eliminar desigualdades entre el hombre y la mujer</cbc:Name>
+            <cbc:ExecutionRequirementCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ExecutionRequirementCode-2.08.gc" languageID="es" name="Eliminar desigualdades entre el hombre y la mujer" listVersionID="2.08">4</cbc:ExecutionRequirementCode>
+            <cbc:Description>Según cláusula 11.12 del PCAP</cbc:Description>
+        </cac:ContractExecutionRequirement>
+        <cac:AwardingTerms>
+            <cac:AwardingCriteria>
+                <cbc:ID>2372990</cbc:ID>
+                <cbc:AwardingCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/AwardingCriteriaCode-2.0.gc" languageID="es" name="Cuantificables Automáticamente" listVersionID="2.0">OBJ</cbc:AwardingCriteriaTypeCode>
+                <cbc:Description>Criterios cualitativos</cbc:Description>
+                <cbc:Note>Según cláusula 9.2 del PCAP</cbc:Note>
+                <cbc:AwardingCriteriaSubTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.09/AwardingCriteriaAutomaticallyEvaluatedSubTypeCode-2.09.gc" languageID="es" name="Otros" listVersionID="2.09">2</cbc:AwardingCriteriaSubTypeCode>
+                <cbc:WeightNumeric>20</cbc:WeightNumeric>
+                <cbc:StructuredValueIndicator>false</cbc:StructuredValueIndicator>
+            </cac:AwardingCriteria>
+            <cac:AwardingCriteria>
+                <cbc:ID>2372988</cbc:ID>
+                <cbc:AwardingCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/AwardingCriteriaCode-2.0.gc" languageID="es" name="Cuantificables Automáticamente" listVersionID="2.0">OBJ</cbc:AwardingCriteriaTypeCode>
+                <cbc:Description>Oferta económica</cbc:Description>
+                <cbc:Note>Según cláusula 9.1 del PCAP</cbc:Note>
+                <cbc:AwardingCriteriaSubTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.09/AwardingCriteriaAutomaticallyEvaluatedSubTypeCode-2.09.gc" languageID="es" name="Precio" listVersionID="2.09">1</cbc:AwardingCriteriaSubTypeCode>
+                <cbc:WeightNumeric>80</cbc:WeightNumeric>
+                <cbc:StructuredValueIndicator>false</cbc:StructuredValueIndicator>
+            </cac:AwardingCriteria>
+        </cac:AwardingTerms>
+        <cac:AdditionalInformationParty>
+            <cac:PartyName>
+                <cbc:Name>Instituto Social de la Marina</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28004</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Génova 24</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:AdditionalInformationParty>
+        <cac:DocumentProviderParty>
+            <cac:PartyName>
+                <cbc:Name>Instituto Social de la Marina</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28004</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Génova 24</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:DocumentProviderParty>
+        <cac:TenderRecipientParty>
+            <cbc:EndpointID>https://contrataciondelestado.es</cbc:EndpointID>
+            <cac:PartyName>
+                <cbc:Name>Instituto Social de la Marina</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28004</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Génova 24</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:TenderRecipientParty>
+        <cac:TenderValidityPeriod>
+            <cbc:DurationMeasure unitCode="MON">2</cbc:DurationMeasure>
+        </cac:TenderValidityPeriod>
+        <cac:AppealTerms>
+            <cac:PresentationPeriod>
+                <cbc:Description>Contra la presente Resolución, cabe formular recurso potestativo de reposición ante la Dirección del Instituto Social de la Marina en el plazo de un mes a contar desde el día siguiente al de su notificación de conformidad con lo establecido en el artículo 123 de la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas o recurso contencioso administrativo ante los Juzgados Centrales de lo Contencioso Administrativo, en el plazo dos meses a contar desde el día siguiente al de su notificación, de acuerdo con lo establecido en el artículo 46.1 de la Ley Reguladora de dicha Jurisdicción</cbc:Description>
+            </cac:PresentationPeriod>
+            <cac:AppealReceiverParty>
+                <cac:PartyName>
+                    <cbc:Name>Instituto Social de la Marina</cbc:Name>
+                </cac:PartyName>
+                <cac:PostalAddress>
+                    <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                    <cbc:CityName>Madrid</cbc:CityName>
+                    <cbc:PostalZone>28004</cbc:PostalZone>
+                    <cbc:CountrySubentity>Madrid</cbc:CountrySubentity>
+                    <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.12/NUTS-2024.gc" name="Madrid" listVersionID="2.12">ES300</cbc:CountrySubentityCode>
+                    <cac:AddressLine>
+                        <cbc:Line>Genova 24</cbc:Line>
+                    </cac:AddressLine>
+                    <cac:Country>
+                        <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                        <cbc:Name>España</cbc:Name>
+                    </cac:Country>
+                </cac:PostalAddress>
+            </cac:AppealReceiverParty>
+        </cac:AppealTerms>
+        <cac:Language>
+            <cbc:ID>es</cbc:ID>
+        </cac:Language>
+        <cac:InvoicingTerms>
+            <cbc:ElectronicInvoicingIndicator>true</cbc:ElectronicInvoicingIndicator>
+        </cac:InvoicingTerms>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Blanqueo de capital o financiación del terrorismo" listVersionID="2.10" listName="exclusion-ground">finan-laund</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Conflicto de intereses debido a su participación en este procedimiento de contratación" listVersionID="2.10" listName="exclusion-ground">partic-confl</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Insolvencia" listVersionID="2.10" listName="exclusion-ground">insolvency</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Acuerdos con otros operadores económicos con el objetivo de falsear la competencia" listVersionID="2.10" listName="exclusion-ground">distorsion</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Situación análoga a la quiebra según la legislación nacional" listVersionID="2.10" listName="exclusion-ground">bankr-nat</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Incumplimiento de obligaciones en materia de legislación laboral" listVersionID="2.10" listName="exclusion-ground">labour-law</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Pago de tasas" listVersionID="2.10" listName="exclusion-ground">tax-pay</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Delitos de terrorismo o delitos vinculados a actividades terroristas" listVersionID="2.10" listName="exclusion-ground">terr-offence</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Acuerdo con los acreedores" listVersionID="2.10" listName="exclusion-ground">cred-arran</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Sancionado por terminación anticipada, daños u otros motivos comparables" listVersionID="2.10" listName="exclusion-ground">sanction</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Corrupción" listVersionID="2.10" listName="exclusion-ground">corruption</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Trabajo infantil y otras formas de trata de seres humanos" listVersionID="2.10" listName="exclusion-ground">human-traffic</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Participación directa o indirecta en la preparación de este procedimiento de contratación" listVersionID="2.10" listName="exclusion-ground">prep-confl</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Participación en una organización criminal" listVersionID="2.10" listName="exclusion-ground">crime-org</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Motivos de exclusión exclusivamente nacionales" listVersionID="2.10" listName="exclusion-ground">nati-ground</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Culpable de falta profesional grave" listVersionID="2.10" listName="exclusion-ground">prof-misconduct</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Incumplimiento de obligaciones en materia de legislación social" listVersionID="2.10" listName="exclusion-ground">socsec-law</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Incumplimiento de obligaciones en materia de legislación ambiental" listVersionID="2.10" listName="exclusion-ground">envir-law</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Quiebra" listVersionID="2.10" listName="exclusion-ground">bankruptcy</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Las actividades comerciales están suspendidas" listVersionID="2.10" listName="exclusion-ground">susp-act</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Bienes administrados por un liquidador" listVersionID="2.10" listName="exclusion-ground">liq-admin</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Fraude" listVersionID="2.10" listName="exclusion-ground">fraud</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Culpable de tergiversación,ocultación de información, incapacidad de proporcionar documentación requerida y obtención de información confidencial de este procedimiento" listVersionID="2.10" listName="exclusion-ground">misrepresent</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+        <cac:ExclusionGrounds>
+            <cbc:ExclusionGroundTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/ExclusionGrounds-2.10.gc" languageID="es" name="Pago de cotizaciones a la seguridad social" listVersionID="2.10" listName="exclusion-ground">socsec-pay</cbc:ExclusionGroundTypeCode>
+            <cbc:Description>Según las normas que rigen la licitación</cbc:Description>
+        </cac:ExclusionGrounds>
+    </cac:TenderingTerms>
+    <cac:TenderingProcess>
+        <cbc:Description>el contrato se adjudicará por Procedimiento Abierto Simplificado, según lo dispuesto en el artículo 159.6 de la LCSP, utilizando varios criterios de adjudicación y articulándose el procedimiento de adjudicación, de acuerdo con lo previsto en el artículo 145.3 de la LCSP. Tramitándose el expediente con carácter ordinario, con el fin de obtener mayor número de ofertas posible a través de la publicación de la licitación en el perfil de contratante del órgano de contratación, que permita la obtención de la oferta con la mejor relación calidad-precio posible en la prestación de los servicios a contratar.&#xD;
+La adjudicación se realizará con varios criterios de adjudicación.</cbc:Description>
+        <cbc:ProcedureCode listURI="http://contrataciondelestado.es/codice/cl/2.08/TenderingProcessCode-2.08.gc" languageID="es" name="Abierto simplificado" listVersionID="2.08">9</cbc:ProcedureCode>
+        <cbc:UrgencyCode listURI="http://contrataciondelestado.es/codice/cl/1.04/DiligenceTypeCode-1.04.gc" languageID="es" name="Ordinaria" listVersionID="2006">1</cbc:UrgencyCode>
+        <cbc:ExpenseCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ExpenseTypeCode-1.04.gc" languageID="es" name="Ordinaria" listVersionID="2006">1</cbc:ExpenseCode>
+        <cbc:ContractingSystemCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ContractingSystemTypeCode-2.08.gc" languageID="es" name="No aplica" listVersionID="2.08">0</cbc:ContractingSystemCode>
+        <cbc:SubmissionMethodCode listURI="http://contrataciondelestado.es/codice/cl/1.04/TenderDeliveryCode-1.04.gc" languageID="es" name="Electrónica" listVersionID="2006">1</cbc:SubmissionMethodCode>
+        <cbc:CandidateReductionConstraintIndicator>false</cbc:CandidateReductionConstraintIndicator>
+        <cbc:GovernmentProcurementAgreementConstraintIndicator>false</cbc:GovernmentProcurementAgreementConstraintIndicator>
+        <cbc:OverThresholdIndicator>false</cbc:OverThresholdIndicator>
+        <cac:DocumentAvailabilityPeriod>
+            <cbc:EndDate>2025-10-06+02:00</cbc:EndDate>
+            <cbc:EndTime>23:59:00.000</cbc:EndTime>
+        </cac:DocumentAvailabilityPeriod>
+        <cac:TenderSubmissionDeadlinePeriod>
+            <cbc:EndDate>2025-10-06+02:00</cbc:EndDate>
+            <cbc:EndTime>23:59:00.000</cbc:EndTime>
+        </cac:TenderSubmissionDeadlinePeriod>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>Detalle_Licitacion</cbc:ID>
+            <cbc:CopyIndicator>false</cbc:CopyIndicator>
+            <cbc:UUID>Detalle_Licitacion</cbc:UUID>
+            <cbc:DocumentTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.11/TenderingDocumentTypeCode-2.11.gc" languageID="es" name="Documento de detalle del Expediente publicado en la Plataforma" listVersionID="2.11">LINK_EXP_PLACE</cbc:DocumentTypeCode>
+            <cac:Attachment>
+                <cac:ExternalReference>
+                    <cbc:URI>https://contrataciondelestado.es/wps/poc?uri=deeplink:detalle_licitacion&amp;idEvl=rg8MIOJWbqpJ8Trn0ZPzLw%3D%3D</cbc:URI>
+                </cac:ExternalReference>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:OpenTenderEvent>
+            <cbc:IdentificationID>Apertura Sobre Único PAS</cbc:IdentificationID>
+            <cbc:OccurrenceDate>2025-10-07+02:00</cbc:OccurrenceDate>
+            <cbc:OccurrenceTime>09:15:00.000</cbc:OccurrenceTime>
+            <cbc:TypeCode listURI="http://contrataciondelestado.es/codice/cl/2.09/EventTypeCode-2.09.gc" languageID="es" name="Apertura sobre oferta económica" listVersionID="2.09">4</cbc:TypeCode>
+            <cac:OccurrenceLocation>
+                <cbc:Description>Sala de Juntas DAAP</cbc:Description>
+                <cac:Address>
+                    <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                    <cbc:CityName>Madrid</cbc:CityName>
+                    <cbc:PostalZone>28004</cbc:PostalZone>
+                    <cac:AddressLine>
+                        <cbc:Line>Génova 24</cbc:Line>
+                    </cac:AddressLine>
+                    <cac:Country>
+                        <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                        <cbc:Name>España</cbc:Name>
+                    </cac:Country>
+                </cac:Address>
+            </cac:OccurrenceLocation>
+            <cac:AttendanceConditions>
+                <cbc:AttendanceRestrictionCode listURI="http://contrataciondelestado.es/codice/cl/2.05/AttendanceRestrictionCode-2.05.gc" languageID="es" name="Privado" listVersionID="2.05">2</cbc:AttendanceRestrictionCode>
+            </cac:AttendanceConditions>
+        </cac:OpenTenderEvent>
+        <cac:AuctionTerms>
+            <cbc:AuctionConstraintIndicator>false</cbc:AuctionConstraintIndicator>
+        </cac:AuctionTerms>
+    </cac:TenderingProcess>
+    <cac:ProcurementProject>
+        <cbc:Name>Servicio de mantenimiento preventivo y correctivo (incluyendo los reconocimientos reglamentarios) y el suministro de repuestos para los equipos de seguridad y contraincendios y los sistemas asociados instalados a bordo de los buques del Instituto Social de la Marina</cbc:Name>
+        <cbc:Description>No está prevista la división en lotes</cbc:Description>
+        <cbc:TypeCode listURI="http://contrataciondelestado.es/codice/cl/2.08/ContractCode-2.08.gc" languageID="es" name="Servicios" listVersionID="2.08">2</cbc:TypeCode>
+        <cbc:SubTypeCode listURI="http://contrataciondelestado.es/codice/cl/1.04/ServiceContractCode-1.04.gc" languageID="es" name="Servicios de mantenimiento y reparación" listVersionID="2006">1</cbc:SubTypeCode>
+        <cbc:MixContractIndicator>false</cbc:MixContractIndicator>
+        <cac:BudgetAmount>
+            <cbc:EstimatedOverallContractAmount currencyID="EUR">58902</cbc:EstimatedOverallContractAmount>
+            <cbc:TotalAmount currencyID="EUR">58902</cbc:TotalAmount>
+            <cbc:TaxExclusiveAmount currencyID="EUR">58902</cbc:TaxExclusiveAmount>
+        </cac:BudgetAmount>
+        <cac:RequiredCommodityClassification>
+            <cbc:ItemClassificationCode listURI="http://contrataciondelestado.es/codice/cl/2.04/CPV2008-2.04.gc" name="Servicios de reparación y mantenimiento de buques." listVersionID="2.04" listName="CPV">50241000</cbc:ItemClassificationCode>
+        </cac:RequiredCommodityClassification>
+        <cac:RealizedLocation>
+            <cbc:Description>Según punto 3 del PPT y cláusula 11.5 del PCAP</cbc:Description>
+            <cbc:CountrySubentity>Madrid</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode listURI="http://contrataciondelestado.es/codice/cl/2.12/NUTS-2024.gc" name="Madrid" listVersionID="2.12">ES300</cbc:CountrySubentityCode>
+            <cac:Address>
+                <cbc:AddressFormatCode listURI="http://contrataciondelestado.es/codice/cl/1.04/AddressFormatCode-1.0.gc" languageID="es" name="Spanish Format" listVersionID="2007">1</cbc:AddressFormatCode>
+                <cbc:CityName>Madrid</cbc:CityName>
+                <cbc:PostalZone>28004</cbc:PostalZone>
+                <cac:AddressLine>
+                    <cbc:Line>Génova 24</cbc:Line>
+                </cac:AddressLine>
+                <cac:Country>
+                    <cbc:IdentificationCode listURI="http://contrataciondelestado.es/codice/cl/2.08/CountryIdentificationCode-2.08.gc" languageID="es" name="España" listVersionID="2.08">ES</cbc:IdentificationCode>
+                    <cbc:Name>España</cbc:Name>
+                </cac:Country>
+            </cac:Address>
+        </cac:RealizedLocation>
+        <cac:PlannedPeriod>
+            <cbc:StartDate>2025-10-15+02:00</cbc:StartDate>
+            <cbc:EndDate>2025-12-31+01:00</cbc:EndDate>
+            <cbc:Description>Según cláusula 3 del PCAP</cbc:Description>
+        </cac:PlannedPeriod>
+        <cac:ProcurementAdditionalType>
+            <cbc:ProcurementTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.10/StrategicProcurement-2.10.gc" languageID="es" name="Ninguno" listVersionID="2.10" listName="strategic-procurement">none</cbc:ProcurementTypeCode>
+        </cac:ProcurementAdditionalType>
+    </cac:ProcurementProject>
+</CallForTenders>

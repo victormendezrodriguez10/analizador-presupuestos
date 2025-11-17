@@ -1,0 +1,20 @@
+<cac:AwardingTerms>
+<cac:AwardingCriteria>
+<cbc:ID>1791317</cbc:ID>
+<cbc:AwardingCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/AwardingCriteriaCode-2.0.gc" languageID="es" name="Cuantificables Automáticamente" listVersionID="2.0">OBJ</cbc:AwardingCriteriaTypeCode>
+<cbc:Description>AMPLACIÓN DEL PLAZO DE GARANTÍA</cbc:Description>
+<cbc:AwardingCriteriaSubTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.09/AwardingCriteriaAutomaticallyEvaluatedSubTypeCode-2.09.gc" languageID="es" name="Otros" listVersionID="2.09">2</cbc:AwardingCriteriaSubTypeCode>
+<cbc:WeightNumeric>20</cbc:WeightNumeric>
+<cbc:MaximumQuantity>20</cbc:MaximumQuantity>
+<cbc:StructuredValueIndicator>true</cbc:StructuredValueIndicator>
+</cac:AwardingCriteria>
+<cac:AwardingCriteria>
+<cbc:ID>1791316</cbc:ID>
+<cbc:AwardingCriteriaTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.0/AwardingCriteriaCode-2.0.gc" languageID="es" name="Cuantificables Automáticamente" listVersionID="2.0">OBJ</cbc:AwardingCriteriaTypeCode>
+<cbc:Description>OFERTA ECONÓMICA</cbc:Description>
+<cbc:AwardingCriteriaSubTypeCode listURI="http://contrataciondelestado.es/codice/cl/2.09/AwardingCriteriaAutomaticallyEvaluatedSubTypeCode-2.09.gc" languageID="es" name="Precio" listVersionID="2.09">1</cbc:AwardingCriteriaSubTypeCode>
+<cbc:WeightNumeric>80</cbc:WeightNumeric>
+<cbc:MaximumQuantity>80</cbc:MaximumQuantity>
+<cbc:StructuredValueIndicator>true</cbc:StructuredValueIndicator>
+</cac:AwardingCriteria>
+</cac:AwardingTerms>

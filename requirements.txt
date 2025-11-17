@@ -1,0 +1,12 @@
+streamlit
+mysql-connector-python
+psycopg2-binary
+pandas
+plotly
+numpy
+scikit-learn
+xlsxwriter
+openpyxl
+requests
+beautifulsoup4
+lxml
