@@ -668,6 +668,39 @@ def crear_excel(datos_lote, contratos, baja_recomendada):
     buffer.seek(0)
     return buffer
 
+# Sistema de autenticación
+def check_login():
+    """Verificar si el usuario está autenticado"""
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+
+    if not st.session_state.authenticated:
+        st.title("🔐 Acceso a Análisis de Bajas Estadísticas")
+        st.markdown("---")
+        st.markdown("### Introduce tus credenciales")
+
+        with st.form("login_form"):
+            email = st.text_input("Email", placeholder="usuario@empresa.com")
+            password = st.text_input("Contraseña", type="password")
+            submit = st.form_submit_button("Iniciar Sesión")
+
+            if submit:
+                # Obtener credenciales de secrets
+                valid_email = st.secrets.get("auth", {}).get("email", "")
+                valid_password = st.secrets.get("auth", {}).get("password", "")
+
+                if email == valid_email and password == valid_password:
+                    st.session_state.authenticated = True
+                    st.success("✅ Acceso concedido")
+                    st.rerun()
+                else:
+                    st.error("❌ Email o contraseña incorrectos")
+
+        st.stop()
+
+# Verificar autenticación antes de mostrar la app
+check_login()
+
 # Interfaz principal
 st.title("📊 Análisis de Bajas Estadísticas")
 st.markdown("---")
