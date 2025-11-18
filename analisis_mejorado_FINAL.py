@@ -6,6 +6,8 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 import random
+import re
+import traceback
 from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -314,7 +316,6 @@ def extraer_datos_json_completo(json_data):
 
     except Exception as e:
         st.error(f"Error al procesar JSON: {e}")
-        import traceback
         st.error(traceback.format_exc())
         return None
 
@@ -350,7 +351,6 @@ def extraer_lote_json(lote_data, numero_lote):
                         lote['presupuesto'] = float(value)
                         break
                     elif isinstance(value, str):
-                        import re
                         clean_value = re.sub(r'[^\d.,]', '', value.replace(',', '.'))
                         if clean_value:
                             lote['presupuesto'] = float(clean_value)
@@ -447,8 +447,6 @@ def extraer_lote_json(lote_data, numero_lote):
 
 def extraer_palabras_clave(texto):
     """Extraer palabras clave relevantes del título"""
-    import re
-
     # Normalizar texto
     texto = texto.lower()
     texto = re.sub(r'[áàäâ]', 'a', texto)
@@ -744,7 +742,6 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
     except Exception as e:
         st.error(f"❌ Error en búsqueda: {e}")
-        import traceback
         st.code(traceback.format_exc())
         return []
     finally:
