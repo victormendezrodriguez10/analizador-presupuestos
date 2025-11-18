@@ -168,21 +168,33 @@ class BajaEstadisticaGenerator:
 
             # Buscar campos comunes en JSON
             # Título - buscar variaciones comunes
-            titulo_keys = ['titulo', 'title', 'name', 'objeto', 'description', 'asunto', 'denominacion']
+            titulo_keys = ['titulo', 'title', 'name', 'objeto', 'description', 'asunto', 'denominacion', 'denominacio']
             for key in titulo_keys:
-                if self._find_json_value(data, key):
-                    datos['titulo'] = str(self._find_json_value(data, key)).strip()
-                    break
+                value = self._find_json_value(data, key)
+                if value:
+                    titulo_text = self._extract_multilang_value(value)
+                    if titulo_text:
+                        datos['titulo'] = str(titulo_text).strip()
+                        break
 
-            # Organismo
-            organismo_keys = ['organismo', 'entidad', 'organo', 'buyer', 'contracting_authority', 'contratante', 'administracion']
+            # Organismo - buscar en estructura anidada también
+            organismo_keys = ['organismo', 'entidad', 'organo', 'organ', 'buyer', 'contracting_authority', 'contratante', 'administracion', 'nom']
             for key in organismo_keys:
-                if self._find_json_value(data, key):
-                    datos['organismo'] = str(self._find_json_value(data, key)).strip()
-                    break
+                value = self._find_json_value(data, key)
+                if value:
+                    # Si el valor es un objeto (como 'organ'), buscar 'nom' o 'name' dentro
+                    if isinstance(value, dict) and ('nom' in value or 'name' in value):
+                        datos['organismo'] = str(value.get('nom') or value.get('name')).strip()
+                        break
+                    else:
+                        organismo_text = self._extract_multilang_value(value)
+                        if organismo_text:
+                            datos['organismo'] = str(organismo_text).strip()
+                            break
 
-            # Presupuesto - buscar variaciones
-            presupuesto_keys = ['presupuesto', 'precio', 'valor', 'importe', 'amount', 'budget', 'value', 'estimatedValue']
+            # Presupuesto - buscar variaciones (incluyendo formato catalán)
+            presupuesto_keys = ['presupuesto', 'pressupost', 'pressupostLicitacio', 'pressupostBaseLicitacioAmbIva',
+                              'precio', 'valor', 'importe', 'amount', 'budget', 'value', 'estimatedValue']
             for key in presupuesto_keys:
                 value = self._find_json_value(data, key)
                 if value:
@@ -200,13 +212,19 @@ class BajaEstadisticaGenerator:
                     except:
                         continue
 
-            # CPV
-            cpv_keys = ['cpv', 'codigo', 'classification', 'classificationCode', 'cpv_code']
+            # CPV - buscar en cpvPrincipal también
+            cpv_keys = ['cpv', 'cpvPrincipal', 'codigo', 'codi', 'classification', 'classificationCode', 'cpv_code']
             for key in cpv_keys:
                 value = self._find_json_value(data, key)
                 if value:
+                    # Si es un objeto (como cpvPrincipal), buscar 'codi' o 'codigo'
+                    if isinstance(value, dict):
+                        cpv_value = value.get('codi') or value.get('codigo') or value.get('code')
+                        if cpv_value:
+                            datos['cpv'] = str(cpv_value).strip()
+                            break
                     # Si es una lista, tomar todos los códigos
-                    if isinstance(value, list):
+                    elif isinstance(value, list):
                         cpv_codes = [str(v) for v in value if str(v).isdigit() and len(str(v)) >= 8]
                         if cpv_codes:
                             datos['cpv'] = ', '.join(cpv_codes)
@@ -214,27 +232,33 @@ class BajaEstadisticaGenerator:
                     else:
                         # Si es string o número, verificar si es un CPV válido
                         cpv_str = str(value).strip()
-                        if cpv_str.isdigit() and len(cpv_str) >= 8:
+                        if cpv_str and (cpv_str[0].isdigit() or '-' in cpv_str):
                             datos['cpv'] = cpv_str
                             break
 
             # Ubicación
-            ubicacion_keys = ['ubicacion', 'lugar', 'provincia', 'location', 'place', 'region', 'city', 'address']
+            ubicacion_keys = ['ubicacion', 'lugar', 'provincia', 'localitat', 'location', 'place', 'region', 'city', 'address', 'llocExecucio']
             for key in ubicacion_keys:
-                if self._find_json_value(data, key):
-                    datos['ubicacion'] = str(self._find_json_value(data, key)).strip()
-                    break
+                value = self._find_json_value(data, key)
+                if value:
+                    ubicacion_text = self._extract_multilang_value(value)
+                    if ubicacion_text:
+                        datos['ubicacion'] = str(ubicacion_text).strip()
+                        break
 
             # Tipo de procedimiento
-            tipo_keys = ['tipo', 'procedimiento', 'procedure', 'type', 'procurementMethod']
+            tipo_keys = ['tipo', 'procedimiento', 'procedimentAdjudicacio', 'tipusProcediment', 'procedure', 'type', 'procurementMethod']
             for key in tipo_keys:
-                if self._find_json_value(data, key):
-                    datos['tipo_procedimiento'] = str(self._find_json_value(data, key)).strip()
-                    break
+                value = self._find_json_value(data, key)
+                if value:
+                    tipo_text = self._extract_multilang_value(value)
+                    if tipo_text:
+                        datos['tipo_procedimiento'] = str(tipo_text).strip()
+                        break
 
             # Criterios de adjudicación - buscar en diferentes estructuras
             criterios = []
-            criterios_keys = ['criterios', 'criteria', 'awardingCriteria', 'evaluationCriteria']
+            criterios_keys = ['criterios', 'criterisAdjudicacio', 'criteria', 'awardingCriteria', 'evaluationCriteria']
 
             for key in criterios_keys:
                 criterios_data = self._find_json_value(data, key)
@@ -243,15 +267,18 @@ class BajaEstadisticaGenerator:
                         for criterio in criterios_data:
                             if isinstance(criterio, dict):
                                 criterio_info = {}
-                                # Buscar descripción
-                                desc_keys = ['descripcion', 'description', 'name', 'titulo']
+
+                                # Buscar descripción con soporte multiidioma
+                                desc_keys = ['descripcion', 'description', 'name', 'titulo', 'criteri', 'descripcioCriteri']
                                 for desc_key in desc_keys:
                                     if desc_key in criterio and criterio[desc_key]:
-                                        criterio_info['descripcion'] = str(criterio[desc_key]).strip()
-                                        break
+                                        desc_value = self._extract_multilang_value(criterio[desc_key])
+                                        if desc_value:
+                                            criterio_info['descripcion'] = str(desc_value).strip()
+                                            break
 
-                                # Buscar peso
-                                peso_keys = ['peso', 'weight', 'puntos', 'points', 'percentage']
+                                # Buscar peso/ponderación
+                                peso_keys = ['peso', 'weight', 'puntos', 'points', 'percentage', 'ponderacio', 'puntuacio']
                                 for peso_key in peso_keys:
                                     if peso_key in criterio and criterio[peso_key]:
                                         peso_val = criterio[peso_key]
@@ -261,8 +288,35 @@ class BajaEstadisticaGenerator:
                                             criterio_info['peso'] = str(peso_val)
                                         break
 
-                                if criterio_info:
-                                    criterios.append(criterio_info)
+                                # Procesar desglossament si existe (formato Diputació)
+                                if 'desglossament' in criterio and isinstance(criterio['desglossament'], list):
+                                    for subcriterio in criterio['desglossament']:
+                                        if isinstance(subcriterio, dict):
+                                            sub_info = {}
+
+                                            # Descripción del subcriterio
+                                            if 'descripcioCriteri' in subcriterio:
+                                                desc_sub = self._extract_multilang_value(subcriterio['descripcioCriteri'])
+                                                if desc_sub:
+                                                    sub_info['descripcion'] = str(desc_sub).strip()
+                                            elif 'tipusCriteri' in subcriterio:
+                                                tipo_sub = self._extract_multilang_value(subcriterio['tipusCriteri'])
+                                                if tipo_sub:
+                                                    sub_info['descripcion'] = str(tipo_sub).strip()
+
+                                            # Puntuación del subcriterio
+                                            if 'puntuacio' in subcriterio:
+                                                sub_info['peso'] = f"{subcriterio['puntuacio']}%"
+
+                                            if sub_info and sub_info.get('descripcion'):
+                                                criterios.append(sub_info)
+
+                                # Si no hay desglossament pero hay criterio principal, añadirlo
+                                if criterio_info and criterio_info.get('descripcion'):
+                                    # Solo añadir si no tiene desglossament o si el desglossament está vacío
+                                    if 'desglossament' not in criterio or not criterio['desglossament']:
+                                        criterios.append(criterio_info)
+
                             elif isinstance(criterio, str):
                                 criterios.append({'descripcion': criterio})
                     elif isinstance(criterios_data, dict):
@@ -270,11 +324,12 @@ class BajaEstadisticaGenerator:
                         criterio_info = {}
                         if 'descripcion' in criterios_data or 'description' in criterios_data:
                             desc = criterios_data.get('descripcion') or criterios_data.get('description')
-                            if desc:
-                                criterio_info['descripcion'] = str(desc).strip()
+                            desc_text = self._extract_multilang_value(desc)
+                            if desc_text:
+                                criterio_info['descripcion'] = str(desc_text).strip()
 
-                        if 'peso' in criterios_data or 'weight' in criterios_data:
-                            peso = criterios_data.get('peso') or criterios_data.get('weight')
+                        if 'peso' in criterios_data or 'weight' in criterios_data or 'ponderacio' in criterios_data:
+                            peso = criterios_data.get('peso') or criterios_data.get('weight') or criterios_data.get('ponderacio')
                             if peso:
                                 criterio_info['peso'] = f"{peso}%" if isinstance(peso, (int, float)) else str(peso)
 
@@ -327,6 +382,24 @@ class BajaEstadisticaGenerator:
                     return result
 
         return None
+
+    def _extract_multilang_value(self, value):
+        """Extraer texto de objetos multiidioma (ca, es, en, oc)"""
+        if isinstance(value, dict):
+            # Priorizar catalán, luego español, inglés y occitano
+            for lang in ['ca', 'es', 'en', 'oc']:
+                if lang in value and value[lang]:
+                    return value[lang]
+            # Si no hay idiomas, intentar con 'name' o el primer valor string
+            if 'name' in value:
+                return value['name']
+            if 'nom' in value:
+                return value['nom']
+            # Devolver el primer valor string que encuentre
+            for v in value.values():
+                if isinstance(v, str) and v.strip():
+                    return v
+        return value
 
     def extract_xml_data(self, xml_url, numero_lote=None):
         """Extraer datos de un XML de contratación del estado

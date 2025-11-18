@@ -1,0 +1,470 @@
+{
+  "versio" : "1.0.0",
+  "codiExpedient" : "2025/0030494",
+  "idExpedient" : "660dccd1-01ac-4991-87a2-32c574fec15e",
+  "dataPublicacioPlanificada" : "2025-11-05T08:54:04.754Z",
+  "organ" : {
+    "nom" : "Diputació de Barcelona",
+    "unitat" : "Diputació de Barcelona: Secció de Licitació",
+    "nif" : "P0800000B",
+    "direccioPostal" : "Carrer Londres, 55",
+    "localitat" : "Barcelona, Barcelona",
+    "codiPostal" : "08036",
+    "nuts" : "ES511",
+    "telefon" : "934022222",
+    "email" : "sgc.licitacio@diba.cat",
+    "personesContacte" : [ ],
+    "centralCompres" : false,
+    "tipusPoderAdjudicador" : 1500006,
+    "observacions" : { },
+    "horari" : { },
+    "organContractacioId" : 11202843
+  },
+  "publicacio" : {
+    "fase" : {
+      "id" : 1000040,
+      "ca" : "Anunci de licitació",
+      "es" : "Anuncio de licitación",
+      "en" : "Tender announcement",
+      "oc" : "Anóncia de licitacion"
+    },
+    "expedientId" : "660dccd1-01ac-4991-87a2-32c574fec15e",
+    "teLots" : false,
+    "dadesBasiquesPublicacio" : {
+      "fasePublicacio" : {
+        "id" : 1000040,
+        "ca" : "Anunci de licitació",
+        "es" : "Anuncio de licitación",
+        "en" : "Tender announcement",
+        "oc" : "Anóncia de licitacion"
+      },
+      "normativaAplicable" : {
+        "id" : 1008186,
+        "ca" : "LCSP (contractes del sector públic)",
+        "en" : "LCSP (public sector contracts)",
+        "oc" : "LCSP (contractes deth sector public)"
+      },
+      "codiExpedient" : "2025/0030494",
+      "denominacio" : {
+        "ca" : "Execució de les obres del “Projecte executiu d’ampliació de punts de recàrrega de vehicles elèctrics a l’edifici Can Serra”"
+      },
+      "descripcio" : {
+        "ca" : "Execució de les obres del “Projecte executiu d’ampliació de punts de recàrrega de vehicles elèctrics a l’edifici Can Serra”"
+      },
+      "observacions" : {
+        "ca" : "És aconsellable que presenteu les vostres ofertes amb un màxim de 24 hores abans del termini."
+      },
+      "tipusPublicacioExpedient" : {
+        "id" : 1000000,
+        "ca" : "Contracte",
+        "en" : "Contract",
+        "oc" : "Contracte"
+      },
+      "tipusTramitacio" : {
+        "id" : 470,
+        "ca" : "Ordinària",
+        "es" : "Ordinaria",
+        "en" : "Ordinary",
+        "oc" : "Ordinària"
+      },
+      "unitatContractacio" : 11373975,
+      "tipusContracte" : {
+        "id" : 395,
+        "ca" : "Obres",
+        "es" : "Obras",
+        "en" : "Work projects",
+        "oc" : "Òbres"
+      },
+      "procedimentAdjudicacio" : {
+        "id" : 419,
+        "ca" : "Obert simplificat",
+        "es" : "Abierto simplificado",
+        "en" : "Open simplified",
+        "oc" : "Daurit simplificat"
+      },
+      "publicacioAgregada" : false,
+      "accesExclusiu" : false,
+      "tipusOfertaElectronica" : {
+        "id" : 413,
+        "ca" : "Sobre digital",
+        "es" : "Sobre digital",
+        "en" : "Digital envelope",
+        "oc" : "Envolopa digitau"
+      },
+      "descripcioAltres" : { },
+      "compraPublicaInnovacio" : false,
+      "compraPublicaPrecomercial" : false,
+      "contracteMixt" : false,
+      "justificacioTramitacioUrgencia" : { },
+      "denominacioExpedientReferencia" : { }
+    },
+    "dadesPublicacio" : {
+      "pressupostLicitacio" : 203206.29,
+      "observacions" : { },
+      "contracteHarmonitzat" : false,
+      "dataTerminiPresentacioOSolicitud" : "2025-11-27T13:00:00.000Z",
+      "adrecaElectronicaPresentacioOfertes" : {
+        "ca" : "https://seuelectronica.diba.cat "
+      },
+      "preveuenModificacionsAlsPlecs" : false,
+      "preveuenProrroguesAlsPlecs" : false,
+      "informacioComplementariaProrroga" : { },
+      "informacioComplementariaModificacio" : { },
+      "valorEstimatContracte" : 203206.29,
+      "iva" : 21,
+      "varisTipusIva" : false,
+      "pressupostBaseLicitacioAmbIva" : 245879.61,
+      "acpAplicable" : true,
+      "justificacioProcedimentUtilitzat" : { },
+      "plecsDeClausulesAdministratives" : {
+        "ca" : [ {
+          "id" : 301731387,
+          "titol" : "PCAP Ampliació punts recàrrega Can Serra.pdf",
+          "path" : "oNFtyQVLBCzU1MIRwhT9j9ZgdYmYbnprePzdy5dFis5fqK9Jo6AsEhhcH3eN5C20pqLKQupqSS9mZKD0x51WGKddqMFZQeCrNvjUPY78MP2olceeM8sGGBH0hRIB_D4F6llyDYSHZHtx0SLRhKnMInPZJU9OeUyXX9rYrT2XxHm097R6qe41Xphukm_h0U-x6lFxr04nl7HTGCCwP91Sk1J1L6_cqJWyvsLH3L0Uu4rPOA4Li9HVcjIbEJkQujpeCKSUCwaheq7RtL-sRPkOlESRi1u4LV0lobsvy582TlTIbgsRfs-ws9gjY0bPV12F0-A7kvpbIONcfLPHxiYjvg==",
+          "hash" : "985539A4C86028D7A7C472E671C6552B",
+          "idioma" : "ca",
+          "mida" : 671724
+        } ],
+        "es" : [ ],
+        "en" : [ ],
+        "oc" : [ ]
+      },
+      "plecsDePrescripcionsTecniques" : {
+        "ca" : [ {
+          "id" : 301731390,
+          "titol" : "Proj Ampliació punts recàrrega vehicles elèctrics Can Serra_NN.pdf",
+          "path" : "O9UlPOITI-5JqTJ7OZdHcW56EimOHTfXtlo8OpY4N19mhzYVLnUxQzYoNb2angF36DEKovyFE3rv-o8ImLlQicYbTCNo5KRx1igxMWsEdvBGO6Noyc9hwOoprIEQjrzn_SHlIJjcN0xtXuU2OMbogzDjHX7qKfgwc1DPW8gS5cIivZs5zBsNFOTxH0yqChOE1TxTIZ_AKZAozwc-CulUF15qSozZC8Rcdsi_WbrjlFy1Si-48W_ByNPjT9BFVSxVMSo38AuEzzSaXoRJnWRy7R46ZNAvht7KNMHK-tWO308Rax8lD3_E1Bi0Iy8QLjuyWz1VcPZPedpRKFCAoX4buA==",
+          "hash" : "B30258B99564FAC30CDCA2C854FF8322",
+          "idioma" : "ca",
+          "mida" : 11895757
+        } ],
+        "es" : [ ],
+        "en" : [ ],
+        "oc" : [ ]
+      },
+      "memoriaJustificativaContracte" : {
+        "ca" : [ {
+          "id" : 301731397,
+          "titol" : "Memòria ampl punts Can Serra.pdf",
+          "path" : "nZdcSDHuM8vZywBRyKWH5l8zQd8iRd056tFdZOaFoCNRQtHB72olmYTPkzBpdduj36Q9dcCxswcrngMrxUqjH4kLQDA1vSGJqlmTcurEISfG3l-2uxv3idEe_RXDineQQOMjewVNwRewRZwGixrkz1Wv52rTztBoCSo-kjPe5WEQr1H4ZMgPx5rruWvPn_-VL62Htqg5t2cr_7y5XLJCzzN3Jh-Y9xXBUJsUpN3SxJI-2AQdIZFQLkxZaDN8vvC4j3T6zwEOj6nVkqlSUYGdjIQSjv-baHEqjctQjSrWV-dc9TTrq3zH5EZqYMo0F1j6DFA_2xh8nxmvd2-lnVyNIg==",
+          "hash" : "3737B2012AFF8CDB04E0A1B48B77291D",
+          "idioma" : "ca",
+          "mida" : 223420
+        } ],
+        "es" : [ ],
+        "en" : [ ],
+        "oc" : [ ]
+      },
+      "documentsAprovacio" : {
+        "ca" : [ {
+          "id" : 301731399,
+          "titol" : "Decret aprov. exp. Amp. punts recàrrega Can Serra_sense plec.pdf",
+          "path" : "LxXfX9r7hdAew5lBX4P4CUDcHiSpGyOp-VRclEMnmOiVx31WEuTSM4AlsfvGXJ-NmeY2xW99uoV9fJxb2SK5i2_bnbRHHVGdgKBs3-K5z6xYi9FaL-Dz6Mjrt2sgUInp82f5nF1IXuxHCZIkUgkv0tuSjXhVSV7OYwnHSky0HNnD0x_0HpJF_7e1NJetvbh1hfBpBph9GLMmY6XUeb0gfG1gkLrjI3XNdwP43yVNThQpDYGkimSkB-lkITjd3vwL-PY_Q8xQqgtps0uxbMCNHxUMCcFie1GzaSKSk-HI6KipUaJUSSnc9_gptqNH4tikxSnX2sxunlTMBsFozJ3CGg==",
+          "hash" : "C392C82F71C4F679B852F89BF9C12E34",
+          "idioma" : "ca",
+          "mida" : 164636
+        } ],
+        "es" : [ ],
+        "en" : [ ],
+        "oc" : [ ]
+      },
+      "altresDocuments" : {
+        "ca" : [ {
+          "id" : 301731400,
+          "titol" : "Acte inici Ampliació punt recàrrega Can Serra.pdf",
+          "path" : "eHMsWdUTri4ewFVa_uHBpGB_U2LUByfVPvM4k6AKZDMJaWCcBYPZ2aUFE5OI7rZcRL9gXspzyAxQZBxx6D0DBpHKEjDDNdqO3Hegm4EH36zbe_SHGspYRi1MdAX5SZuRW0Xbv8jAoa2o2b48JceoCIt3tfdmeluDCz9HIkziR9pXTvms0uyECtq1wa0TkqpRRMIpZISku5_z5iUyej8Jp7cTn2mB59iRog3AaACJf-E059E2P4UD5UNbvHldxf2FGhBNGn00GqZ0JE1DfLzEzS8yOm0AWuYUVf0iEUxMQcVyVJxCZm08SAh4Vns61WXbdC1szyf0QoQZfzi8pbS9zg==",
+          "hash" : "3900D1FDBB20E9C15C461823587D348E",
+          "idioma" : "ca",
+          "mida" : 129534
+        }, {
+          "id" : 301731403,
+          "titol" : "Annex II criteris automàtics.docx",
+          "path" : "LEfj8xC8ZgfXpMlLx2Legkkyk8GZ0Cp7lxswDR4BGJcw-Hw_p28O8fqDbb3eNpRGq4rhe4Wvipg4P_qkb2RspStS6MG_kV5X178kGR-CwLOVQwapiyNkK9AMaD5wuBVH2DX6iJ1MjbAwItgnIigeiU47hfIwkdzMEVAOjTDmeXLSHykFnDCmiVVWz7KFfSOKFUpIinyu0DeLP1m6BWhVJQioqJZmAFr3NddO58V3YjgJ9GxSVJCHhafQb1lAE9LU0oxp7bLSDsPPdY0nba4Qz0fELagznFPrYjAOmYw90iYA1SgjcyzjE0JQZlrZKjbirCVNLqbzfKtfdt5lDmh4Eg==",
+          "hash" : "2D6429FEC807FB5E73A582CB8D83356B",
+          "idioma" : "ca",
+          "mida" : 49369
+        }, {
+          "id" : 301731405,
+          "titol" : "56168_Can Serra_executiu.TCQ",
+          "path" : "eWZYNv_MQ2WGyF0O--4xM0Sk--qBRRzpYzUUt6RjO54w3KF_VSxzlGc4WVEtA1Vqm3YcbQWn5NyGPhhtcBXqEsbU98-iBCoG9E8o2nJK57HS5MtbW-u4Vmy45ZBgAvoJ7pkp1rJ7guiJqAPO0Lf31_mgLrpFH9Ph-CGmYCbUpoNMIyf2tsqI2pNN-CyxJhpEcQQddnxovrZLK0UJTkymKrY5yS_Un0KLbLXg18816OmlI38pMYOuUCzbk4ldKXy0rn3-KQ53UQbrBMVa_HgvjR9w5sbd2G0c7ts-lNNwLQ3-J4FlD-bixuusbSWOt2SkJHMNecR-KTSYWzmwVNWqJA==",
+          "hash" : "D395737FB2586267B2C8AFEB543B0819",
+          "idioma" : "ca",
+          "mida" : 5685248
+        }, {
+          "id" : 301731418,
+          "titol" : "Declaració responsable normativa nacional (simplificats).pdf",
+          "path" : "MvELHpMaQZK7WU1lcmKkR7Athmx515DvWtTIdB_b1dMtumdgWLskhxvTtvniwBp5By3F3UW2LLRPkjAypP2__ooL_FVL-j-xkFOAIi8iPcZtLSsiW-qBKAHiEkb3Y1shcB72MkekinkesDT9SgQAfyA7kyMsmRuD6Iw6dMJIqWlTOkPh7CrwARtxL0Q1CnjZff88EJnPlyAmbi0mX3EG4gDWZhxlffS9c_pjyPJUf2Op443eahIvNwdBEItdU0BAr78O-JP_5l-3Sw-FT5GqHlTYWezzgMk58hsoBD4hyD9PcyfOmfxR2s3P2oqpXx7Xu-TNzCfNntFGNRe1M77vgA==",
+          "hash" : "830CE32E7270FEFF6EFBDA028CA2A429",
+          "idioma" : "ca",
+          "mida" : 579968
+        } ],
+        "es" : [ ],
+        "en" : [ ],
+        "oc" : [ ]
+      },
+      "seleccioLlenguesRedactarOfertes" : {
+        "ca" : true,
+        "es" : true,
+        "en" : false,
+        "oc" : true
+      },
+      "justificacioNoExistenciaLots" : {
+        "id" : 1008190,
+        "ca" : "Art.99.3 b) El fet que la realització independent de les diverses prestacions compreses en l’objecte el contracte en dificulti l’execució correcta des del punt de vista tècnic; o bé que el risc per a l’execució correcta del contracte procedeixi de la naturalesa del seu objecte, en implicar la necessitat de coordinar l’execució de les diferents prestacions, qüestió que es podria veure impossibilitada per la seva divisió en lots i l’execució per una pluralitat de contractistes diferents. Tots dos aspectes, si s’escau, s’han de justificar degudament en l’expedient",
+        "en" : "Art. 99.3.b) The fact that the independent performance of the various services indicated as the purpose of the contract hinders their correct implementation from a technical point of view; or that the risk for the correct implementation of the contract comes from the nature of its purpose, since it involves the need to coordinate the implementation of the various services, an issue that could be made impossible by its division into lots and being undertaken by a plurality of different contractors. Both aspects, if applicable, must be duly justified in the file",
+        "oc" : "Art.99.3 b) Er hèt qu'era realizacion independenta des diuèrses prestacions comprenudes en er objècte eth contracte ne dificulte era execucion corrècta dempús deth punt d'enguarda tecnic; o plan qu'eth risc entara execucion corrècta deth contracte provengue dera natura deth sòn objècte, en implicar eth besonh de coordinar era execucion des diferentes prestacions, ahèr que se poirie veir impossibilitada pera sua division en lòts e era execucion per ua pluralitat de contractistes diferenti. Toti dus aspèctes, se s’esquèr, les cau justificar degudaments en expedient"
+      },
+      "utilitzenComandesElectroniques" : false,
+      "utilitzaPagamentElectronic" : true,
+      "acceptaCatalegElectronic" : false,
+      "contracteRelacionatFinanciatFonsUnioEuropea" : false,
+      "divisioEnLots" : {
+        "id" : 1008401,
+        "ca" : "Sense lots"
+      },
+      "motiuContracteNoInformatLots" : { },
+      "contractacioConjunta" : false,
+      "peuRecurs" : {
+        "ca" : "Contra aquesta resolució, que posa fi a la via administrativa, es podrà interposar recurs contenciós administratiu davant el Jutjat Contenciós Administratiu de Barcelona, en el termini de dos mesos a comptar des del dia següent al de la seva notificació. \nAlternativament i de forma potestativa, es pot interposar recurs de reposició davant el mateix òrgan que l’ha dictat, en el termini d’un mes a comptar des del dia següent al de la seva notificació.\n"
+      },
+      "adrecaPresentacioRecurs" : {
+        "ca" : "sgc.licitacio@diba.cat "
+      },
+      "elementsCondicionsOfertesIntegradores" : { }
+    },
+    "dadesPublicacioLot" : [ {
+      "ultimaObertura" : {
+        "lloc" : {
+          "ca" : "Telemàticament",
+          "es" : "Telemàticament"
+        },
+        "descripcio" : { },
+        "personesAutoritzades" : {
+          "ca" : "Acte No públic",
+          "es" : "Acte No públic"
+        },
+        "dataOberturaText" : {
+          "ca" : "A partir de la data fi de presentació d'ofertes o a partir d'aquesta data + 24h"
+        },
+        "mostrarDataObertura" : false,
+        "sobre" : {
+          "ca" : "Sobre únic",
+          "es" : "Sobre únic",
+          "en" : "Sobre únic",
+          "oc" : "Sobre únic"
+        }
+      },
+      "pressupostLicitacio" : 203206.29,
+      "publicacioExpedientId" : 300606164,
+      "iva" : 21,
+      "pressupostBaseLicitacioAmbIva" : 245879.61,
+      "varisTipusIva" : false,
+      "valorEstimat" : 203206.29,
+      "canonExplotacio" : { },
+      "calendariEstimatPerPublicacioAnuncisUlterior" : { },
+      "llocExecucio" : {
+        "codiNuts" : "ES511",
+        "ca" : "Barcelona",
+        "es" : "Barcelona",
+        "en" : "Barcelona",
+        "oc" : "null"
+      },
+      "duradaTermini" : {
+        "esDurada" : true,
+        "anys" : 0,
+        "mesos" : 2,
+        "dies" : 0,
+        "observacions" : { }
+      },
+      "condicionsExecucio" : [ {
+        "tipusCondicioExecucio" : {
+          "id" : 1008192,
+          "ca" : "Altres condicions d'execució",
+          "en" : "Other conditions of execution",
+          "oc" : "D’autes condicions d'execucion"
+        },
+        "descripcio" : {
+          "ca" : "Veure la clàusula 2.2 del Plec de Clàusules Administratives Particulars"
+        }
+      } ],
+      "oberturaSobres" : [ {
+        "lloc" : {
+          "ca" : "Telemàticament",
+          "es" : "Telemàticament"
+        },
+        "descripcio" : { },
+        "personesAutoritzades" : {
+          "ca" : "Acte No públic",
+          "es" : "Acte No públic"
+        },
+        "dataOberturaText" : {
+          "ca" : "A partir de la data fi de presentació d'ofertes o a partir d'aquesta data + 24h"
+        },
+        "mostrarDataObertura" : false,
+        "sobre" : {
+          "ca" : "Sobre únic",
+          "es" : "Sobre únic",
+          "en" : "Sobre únic",
+          "oc" : "Sobre únic"
+        }
+      } ],
+      "prorroguesPrevistes" : false,
+      "informacioProrrogaComplementaria" : { },
+      "modificacioPrevista" : false,
+      "informacioModificacioComplementaria" : { },
+      "acceptaVariants" : false,
+      "elementsVariants" : { },
+      "garantiaProvisional" : false,
+      "garantiaDefinitiva" : true,
+      "reservaSocial" : false,
+      "frequenciaContractesAdjudicar" : { },
+      "justificacioAcordMarc" : { },
+      "solvenciesTecniques" : [ {
+        "criteriSolvencia" : {
+          "id" : 1008234,
+          "ca" : "Altres",
+          "en" : "Others",
+          "oc" : "D’auti"
+        },
+        "valorMinimExigit" : { },
+        "descripcioCriteriSolvencia" : {
+          "ca" : "\nVeure la clàusula 1.10 del Plec de Clàusules Administratives Particulars\n"
+        },
+        "descripcioMitjaAcreditacio" : { }
+      } ],
+      "solvenciesEconomiques" : [ {
+        "criteriSolvencia" : {
+          "id" : 1008223,
+          "ca" : "Altres",
+          "en" : "Others",
+          "oc" : "D’auti"
+        },
+        "valorMinimExigit" : { },
+        "descripcioCriteriSolvencia" : {
+          "ca" : "\nVeure la clàusula 1.10 del Plec de Clàusules Administratives Particulars\n"
+        },
+        "descripcioMitjaAcreditacio" : { }
+      } ],
+      "classificacionsEmpresarials" : [ ],
+      "criteriSeleccioNombreCandidats" : { },
+      "nomParticipantsConsiderat" : { },
+      "criterisSeleccioParticipants" : { },
+      "descripcioPagamentsParticipants" : { },
+      "condicionsParticipacio" : {
+        "contracteNomesExecutaEnMarcDeProgrames" : false,
+        "reservaPrestacioServeiAProfessio" : false,
+        "contracteRestringitACentresEspecials" : false,
+        "criterisRelatiusSituacioPersonalOperadorsEconomicsExecucio" : { }
+      },
+      "percentatgeGarantiaDefinitiva" : 5,
+      "teDiversosCriterisAdjudicacio" : true,
+      "criterisAdjudicacio" : [ {
+        "index" : 0,
+        "criteri" : {
+          "id" : 1008427,
+          "ca" : "Preu"
+        },
+        "ponderacio" : 75,
+        "observacions" : { },
+        "desglossament" : [ {
+          "tipusCriteri" : {
+            "id" : 1008359,
+            "ca" : "Preu",
+            "es" : "Precio",
+            "en" : "Price",
+            "oc" : "Prètz"
+          },
+          "puntuacio" : 75,
+          "descripcioCriteri" : { },
+          "identificador" : "269802314335832"
+        } ]
+      }, {
+        "index" : 1,
+        "criteri" : {
+          "id" : 1008428,
+          "ca" : "Resta de criteris de valoració automàtica"
+        },
+        "ponderacio" : 25,
+        "observacions" : { },
+        "desglossament" : [ {
+          "tipusCriteri" : {
+            "id" : 1008373,
+            "ca" : "Altres criteris qualitatius",
+            "es" : "Otros criterios cualitativos",
+            "en" : "Other qualitative criteria",
+            "oc" : "D’auti critèris qualitatius"
+          },
+          "puntuacio" : 25,
+          "descripcioCriteri" : {
+            "ca" : "Ampliació del termini de garantia dels equips de recàrrega"
+          },
+          "identificador" : "269802314337369"
+        } ]
+      }, {
+        "index" : 2,
+        "criteri" : {
+          "id" : 1008429,
+          "ca" : "Criteris de valoració sotmesos a judici de valor",
+          "es" : "Criterios de valoración sometidos a juicio de valor",
+          "en" : "Valuation criteria subject to value judgment",
+          "oc" : "Critèris d'avaloracion sometudi a jutjament de valor"
+        },
+        "ponderacio" : 0,
+        "observacions" : { },
+        "desglossament" : [ ]
+      } ],
+      "cpvPrincipal" : {
+        "codi" : "45310000-3",
+        "ca" : "Treballs d'instal·lació d'equips elèctrics",
+        "es" : "Trabajos de instalación eléctrica",
+        "en" : "Electrical installation work",
+        "oc" : "Trabalhs d'installacion d'equipes electriques"
+      },
+      "cpvsSecundaris" : [ ],
+      "garantiaComplementaria" : false,
+      "revisioPreus" : {
+        "id" : 1008438,
+        "ca" : "No prevista revisió de preus"
+      },
+      "preuUnitari" : false,
+      "prescripcionsTecniquesSocials" : false,
+      "prescripcionsTecniquesAmbientals" : false,
+      "llistatPrescripcionsTecniquesSocials" : [ ]
+    } ],
+    "dadesExpedient" : {
+      "idiomaPerDefecte" : {
+        "id" : 1000031,
+        "ca" : "Català",
+        "es" : "Catalan",
+        "en" : "Catalan",
+        "oc" : "Catalan"
+      },
+      "expedientId" : "660dccd1-01ac-4991-87a2-32c574fec15e",
+      "lleiAssociada" : "Llei 2017/2019",
+      "noAdmetrePreguntes" : true,
+      "esPublicacioAntiga" : false,
+      "denominacioExpedientReferencia" : { }
+    },
+    "publicacionsOficials" : [ ],
+    "motiuEsmena" : { }
+  },
+  "pathPdf" : "QsjckbKxdEJG6NVocIdx9lXUZm3zzY6dscoo7Conv7JJgjB1U_lLmgU2GA6zDi0npJbLc57mVE8B2XHoqHINrrEzp-e6jUntZfgTKwkXMZWPqHd2ikI-iIC2J46vlLj0_2GMfNrrUFh8vLD5JquwrOzAEUDMDgZ0DsxRDQQA8QeWRj4iuj1K1-Js03GxXJhVaho7ovgMnrMyS77UHiv73ii56s_ScVj-w1wWCCVRB7BFuV81iHeCKZU_yc8fImyHSrgNlyDVnbt5auR7arOz_r3q2lv4JM6R8oARCIZxv25r53jfP3FpIqRZdVyFww2LJPUD3fL6UtiaZzcrNW3S1Q==",
+  "pathCertificacio" : "c6CoKLNsyjqfXvoApNSZmbGZUgjbcIaHbCi6ulMI7i_u0qrd74Ba7-xzksVmdvV2Ewg2K5bl8GqBj2MT_-WJdYZjLlsFyYFmNAYIv6otHQZ5frR9jPlHM6HFNYbFeoesyfn5WmyrXcCOUFFCauHPzoFFMzP0tZs55CdZZNhItE1Ig88kAXZt49_OgFTrzi--UVh0yzT8R4mGliI8zcyxz34Pvpq0XEKqUIKQlooU9l99gUuUIw82GXP5ehvrgvVzQlExy4GHokSzdPxdYWQY_2UEFU6ZBsMlKwrP345vkDCLiPFWE6Iz7jsPC2HRHI_4gdUBQxDVnzckkXDiZqBaPw==",
+  "pathJson" : "OKuAiMyN3USI4mYWeV99SrZQEuVXmHROSngTryCkKLQGWAzYAo2JmYWGli6sr8U1XOU9S7AHi_LNCfEZSWsVqowsKC9xY3O3lYACTHTUYiQW2E9Gv86jbtm7mIPrbuX5SDuH3hczBtZfxx7djmq8stuVxzPogfRt0xcLnoNTGsMYdGQCJ8UZCZZNhO7UQJBPu4JCCLYCejsQJV6Lzmwdng2mszlfBW-dna4IvgjsxEUamjCqcFity4887Ysc2HN1UUIVwH3euMEdVXJvrWtXcqp3zu9qrdeFNXoFg78o4s23wtB8FNC0sj2jqGffnFA5Dpo77wS0DyZvqCRDUwj_5g==",
+  "dataPublicacioReal" : "2025-11-05T08:56:07.554Z",
+  "dadesExpedient" : {
+    "idiomaPerDefecte" : {
+      "id" : 1000031,
+      "ca" : "Català",
+      "es" : "Catalan",
+      "en" : "Catalan",
+      "oc" : "Catalan"
+    },
+    "expedientId" : "660dccd1-01ac-4991-87a2-32c574fec15e",
+    "lleiAssociada" : "Llei 2017/2019",
+    "noAdmetrePreguntes" : true,
+    "esPublicacioAntiga" : false,
+    "tipusOfertaElectronica" : 413,
+    "denominacioExpedientReferencia" : { }
+  }
+}
