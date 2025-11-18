@@ -201,6 +201,250 @@ def extraer_datos_xml_completo(url):
         st.error(f"Error al procesar XML: {e}")
         return None
 
+def _extract_multilang_value(value):
+    """Extraer texto de objetos multiidioma (ca, es, en, oc)"""
+    if isinstance(value, dict):
+        # Priorizar catalán, luego español, inglés y occitano
+        for lang in ['ca', 'es', 'en', 'oc']:
+            if lang in value and value[lang]:
+                return value[lang]
+        # Si no hay idiomas, intentar con 'name' o el primer valor string
+        if 'name' in value:
+            return value['name']
+        if 'nom' in value:
+            return value['nom']
+        # Devolver el primer valor string que encuentre
+        for v in value.values():
+            if isinstance(v, str) and v.strip():
+                return v
+    return value
+
+def _find_json_value(data, key_to_find):
+    """Buscar una clave en un JSON de manera recursiva (case-insensitive)"""
+    if isinstance(data, dict):
+        # Buscar directamente (case-insensitive)
+        for key, value in data.items():
+            if key.lower() == key_to_find.lower() and value:
+                return value
+
+        # Buscar recursivamente en valores anidados
+        for key, value in data.items():
+            if isinstance(value, (dict, list)):
+                result = _find_json_value(value, key_to_find)
+                if result:
+                    return result
+    elif isinstance(data, list):
+        for item in data:
+            result = _find_json_value(item, key_to_find)
+            if result:
+                return result
+
+    return None
+
+def extraer_datos_json_completo(json_data):
+    """Extraer datos completos del JSON incluyendo lotes"""
+    try:
+        # Si es un string, parsearlo como JSON
+        if isinstance(json_data, str):
+            data = json.loads(json_data)
+        elif isinstance(json_data, dict):
+            data = json_data
+        else:
+            st.error("Formato JSON no válido")
+            return None
+
+        datos = {
+            'titulo': '',
+            'organismo': '',
+            'ubicacion': '',
+            'lotes': []
+        }
+
+        # BUSCAR TÍTULO
+        titulo_keys = ['titulo', 'title', 'name', 'objeto', 'description', 'asunto', 'denominacion', 'denominacio']
+        for key in titulo_keys:
+            value = _find_json_value(data, key)
+            if value:
+                titulo_text = _extract_multilang_value(value)
+                if titulo_text:
+                    datos['titulo'] = str(titulo_text).strip()
+                    break
+
+        # BUSCAR ORGANISMO
+        organismo_keys = ['organismo', 'entidad', 'organo', 'organ', 'buyer', 'contracting_authority', 'contratante', 'administracion', 'nom']
+        for key in organismo_keys:
+            value = _find_json_value(data, key)
+            if value:
+                # Si el valor es un objeto (como 'organ'), buscar 'nom' o 'name' dentro
+                if isinstance(value, dict) and ('nom' in value or 'name' in value):
+                    datos['organismo'] = str(value.get('nom') or value.get('name')).strip()
+                    break
+                else:
+                    organismo_text = _extract_multilang_value(value)
+                    if organismo_text:
+                        datos['organismo'] = str(organismo_text).strip()
+                        break
+
+        # BUSCAR UBICACIÓN
+        ubicacion_keys = ['ubicacion', 'lugar', 'provincia', 'localitat', 'location', 'place', 'region', 'city', 'address', 'llocExecucio']
+        for key in ubicacion_keys:
+            value = _find_json_value(data, key)
+            if value:
+                ubicacion_text = _extract_multilang_value(value)
+                if ubicacion_text:
+                    datos['ubicacion'] = str(ubicacion_text).strip()
+                    break
+
+        # BUSCAR LOTES (o usar el documento completo como un único lote)
+        lotes_data = _find_json_value(data, 'dadesPublicacioLot') or _find_json_value(data, 'lotes') or _find_json_value(data, 'lots')
+
+        if lotes_data and isinstance(lotes_data, list):
+            # Hay lotes definidos
+            for idx, lote_data in enumerate(lotes_data, 1):
+                lote = extraer_lote_json(lote_data, idx)
+                if lote:
+                    datos['lotes'].append(lote)
+        else:
+            # No hay lotes, usar el documento completo como un único lote
+            lote = extraer_lote_json(data, 1)
+            if lote:
+                datos['lotes'].append(lote)
+
+        return datos
+
+    except Exception as e:
+        st.error(f"Error al procesar JSON: {e}")
+        import traceback
+        st.error(traceback.format_exc())
+        return None
+
+def extraer_lote_json(lote_data, numero_lote):
+    """Extraer información de un lote desde JSON"""
+    try:
+        lote = {
+            'numero': str(numero_lote),
+            'titulo': '',
+            'presupuesto': 0,
+            'cpv': [],
+            'criterios': []
+        }
+
+        # BUSCAR TÍTULO DEL LOTE
+        titulo_keys = ['titulo', 'denominacion', 'denominacio', 'name', 'description']
+        for key in titulo_keys:
+            value = _find_json_value(lote_data, key)
+            if value:
+                titulo_text = _extract_multilang_value(value)
+                if titulo_text and len(str(titulo_text).strip()) > 10:
+                    lote['titulo'] = str(titulo_text).strip()
+                    break
+
+        # BUSCAR PRESUPUESTO
+        presupuesto_keys = ['presupuesto', 'pressupost', 'pressupostLicitacio', 'pressupostBaseLicitacioAmbIva',
+                          'precio', 'valor', 'importe', 'amount', 'budget', 'value', 'estimatedValue']
+        for key in presupuesto_keys:
+            value = _find_json_value(lote_data, key)
+            if value:
+                try:
+                    if isinstance(value, (int, float)):
+                        lote['presupuesto'] = float(value)
+                        break
+                    elif isinstance(value, str):
+                        import re
+                        clean_value = re.sub(r'[^\d.,]', '', value.replace(',', '.'))
+                        if clean_value:
+                            lote['presupuesto'] = float(clean_value)
+                            break
+                except:
+                    continue
+
+        # BUSCAR CPV
+        cpv_keys = ['cpv', 'cpvPrincipal', 'codigo', 'codi', 'classification', 'classificationCode', 'cpv_code']
+        for key in cpv_keys:
+            value = _find_json_value(lote_data, key)
+            if value:
+                # Si es un objeto (como cpvPrincipal), buscar 'codi' o 'codigo'
+                if isinstance(value, dict):
+                    cpv_value = value.get('codi') or value.get('codigo') or value.get('code')
+                    if cpv_value:
+                        lote['cpv'].append(str(cpv_value).strip())
+                        break
+                # Si es una lista, tomar todos los códigos
+                elif isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict):
+                            cpv_value = item.get('codi') or item.get('codigo') or item.get('code')
+                            if cpv_value:
+                                lote['cpv'].append(str(cpv_value).strip())
+                        elif isinstance(item, str) and item.strip():
+                            lote['cpv'].append(item.strip())
+                    if lote['cpv']:
+                        break
+                else:
+                    # Si es string, añadirlo directamente
+                    cpv_str = str(value).strip()
+                    if cpv_str:
+                        lote['cpv'].append(cpv_str)
+                        break
+
+        # BUSCAR CRITERIOS DE ADJUDICACIÓN
+        criterios_keys = ['criterios', 'criterisAdjudicacio', 'criteria', 'awardingCriteria', 'evaluationCriteria']
+        for key in criterios_keys:
+            criterios_data = _find_json_value(lote_data, key)
+            if criterios_data and isinstance(criterios_data, list):
+                for criterio in criterios_data:
+                    if isinstance(criterio, dict):
+                        # Buscar descripción
+                        desc_keys = ['descripcion', 'description', 'name', 'titulo', 'criteri']
+                        desc_text = None
+                        for desc_key in desc_keys:
+                            if desc_key in criterio and criterio[desc_key]:
+                                desc_value = _extract_multilang_value(criterio[desc_key])
+                                if desc_value:
+                                    desc_text = str(desc_value).strip()
+                                    break
+
+                        # Buscar peso
+                        peso_keys = ['peso', 'weight', 'puntos', 'points', 'percentage', 'ponderacio']
+                        peso_text = None
+                        for peso_key in peso_keys:
+                            if peso_key in criterio and criterio[peso_key]:
+                                peso_val = criterio[peso_key]
+                                if isinstance(peso_val, (int, float)):
+                                    peso_text = f"{peso_val}%"
+                                else:
+                                    peso_text = str(peso_val)
+                                break
+
+                        # Si tiene desglossament (formato Diputació), procesarlo
+                        if 'desglossament' in criterio and isinstance(criterio['desglossament'], list):
+                            for subcriterio in criterio['desglossament']:
+                                if isinstance(subcriterio, dict):
+                                    sub_desc = None
+                                    if 'descripcioCriteri' in subcriterio:
+                                        sub_desc = _extract_multilang_value(subcriterio['descripcioCriteri'])
+                                    elif 'tipusCriteri' in subcriterio:
+                                        sub_desc = _extract_multilang_value(subcriterio['tipusCriteri'])
+
+                                    sub_peso = None
+                                    if 'puntuacio' in subcriterio:
+                                        sub_peso = f"{subcriterio['puntuacio']}%"
+
+                                    if sub_desc:
+                                        lote['criterios'].append(f"{sub_desc}: {sub_peso}" if sub_peso else sub_desc)
+                        else:
+                            # Añadir criterio normal
+                            if desc_text:
+                                criterio_str = f"{desc_text}: {peso_text}" if peso_text else desc_text
+                                lote['criterios'].append(criterio_str)
+                break
+
+        return lote if lote['presupuesto'] > 0 else None
+
+    except Exception as e:
+        st.warning(f"Error al procesar lote {numero_lote}: {e}")
+        return None
+
 def extraer_palabras_clave(texto):
     """Extraer palabras clave relevantes del título"""
     import re
@@ -705,23 +949,59 @@ check_login()
 st.title("📊 Análisis de Bajas Estadísticas")
 st.markdown("---")
 
-xml_url = st.text_input(
-    "Introduce la URL del XML del contrato:",
-    placeholder="https://contrataciondelestado.es/FileSystem/servlet/...",
-    help="Pega la URL completa del XML"
+# Selector de tipo de fuente
+source_type = st.radio(
+    "Selecciona el tipo de fuente:",
+    options=["XML (URL)", "JSON (Archivo)"],
+    index=0,
+    help="Elige si quieres analizar desde una URL de XML o subir un archivo JSON"
 )
 
+xml_url = None
+json_file = None
+
+if source_type == "XML (URL)":
+    # Input para URL del XML
+    xml_url = st.text_input(
+        "Introduce la URL del XML del contrato:",
+        placeholder="https://contrataciondelestado.es/FileSystem/servlet/...",
+        help="Pega la URL completa del XML"
+    )
+else:
+    # File uploader para JSON
+    json_file = st.file_uploader(
+        "Sube el archivo JSON de la licitación:",
+        type=['json'],
+        help="Selecciona un archivo JSON que contenga los datos de la licitación"
+    )
+
 if st.button("🚀 Analizar Contrato", type="primary"):
-    if not xml_url:
+    if source_type == "XML (URL)" and not xml_url:
         st.warning("Por favor, introduce una URL")
+    elif source_type == "JSON (Archivo)" and not json_file:
+        st.warning("Por favor, sube un archivo JSON")
     else:
-        with st.spinner("Procesando XML..."):
-            datos = extraer_datos_xml_completo(xml_url)
+        datos = None
+
+        if source_type == "XML (URL)":
+            with st.spinner("Procesando XML..."):
+                datos = extraer_datos_xml_completo(xml_url)
+        else:
+            with st.spinner("Procesando JSON..."):
+                try:
+                    # Leer el archivo JSON
+                    json_content = json_file.read().decode('utf-8')
+                    datos = extraer_datos_json_completo(json_content)
+                except Exception as e:
+                    st.error(f"Error leyendo archivo JSON: {e}")
+                    datos = None
 
         if not datos or not datos['lotes']:
-            st.error("No se pudieron extraer lotes del XML")
+            source_name = "XML" if source_type == "XML (URL)" else "JSON"
+            st.error(f"No se pudieron extraer lotes del {source_name}")
         else:
-            st.success(f"✅ XML procesado - {len(datos['lotes'])} lote(s) encontrado(s)")
+            source_name = "XML" if source_type == "XML (URL)" else "JSON"
+            st.success(f"✅ {source_name} procesado - {len(datos['lotes'])} lote(s) encontrado(s)")
 
             # Analizar cada lote
             for lote in datos['lotes']:
