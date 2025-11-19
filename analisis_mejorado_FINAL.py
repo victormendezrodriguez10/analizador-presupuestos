@@ -434,57 +434,81 @@ def extraer_lote_json(lote_data, numero_lote, titulo_general=''):
                             lote['cpv'].append(cpv_str)
                             break
 
-        # BUSCAR CRITERIOS DE ADJUDICACIÓN
-        criterios_keys = ['criterios', 'criterisAdjudicacio', 'criteria', 'awardingCriteria', 'evaluationCriteria']
-        for key in criterios_keys:
-            criterios_data = _find_json_value(lote_data, key)
-            if criterios_data and isinstance(criterios_data, list):
-                for criterio in criterios_data:
-                    if isinstance(criterio, dict):
-                        # Buscar descripción
-                        desc_keys = ['descripcion', 'description', 'name', 'titulo', 'criteri']
-                        desc_text = None
-                        for desc_key in desc_keys:
-                            if desc_key in criterio and criterio[desc_key]:
-                                desc_value = _extract_multilang_value(criterio[desc_key])
-                                if desc_value:
-                                    desc_text = str(desc_value).strip()
-                                    break
+        # BUSCAR CRITERIOS DE ADJUDICACIÓN (solo verdaderos criterios de evaluación)
+        # Buscar específicamente en criterisAdjudicacio primero
+        criterios_data = None
+        if 'criterisAdjudicacio' in lote_data:
+            criterios_data = lote_data['criterisAdjudicacio']
+        elif 'criteriosAdjudicacion' in lote_data:
+            criterios_data = lote_data['criteriosAdjudicacion']
+        else:
+            # Buscar genéricamente si no hay ruta directa
+            criterios_keys = ['criterios', 'criteria', 'awardingCriteria', 'evaluationCriteria']
+            for key in criterios_keys:
+                criterios_data = _find_json_value(lote_data, key)
+                if criterios_data:
+                    break
 
-                        # Buscar peso
-                        peso_keys = ['peso', 'weight', 'puntos', 'points', 'percentage', 'ponderacio']
-                        peso_text = None
+        # Palabras que indican que NO es un criterio de adjudicación (son requisitos previos)
+        palabras_excluir = ['solvencia', 'solvències', 'habilitacion', 'capacidad', 'acreditacion']
+
+        if criterios_data and isinstance(criterios_data, list):
+            for criterio in criterios_data:
+                if isinstance(criterio, dict):
+                    # Buscar descripción
+                    desc_keys = ['descripcion', 'description', 'name', 'titulo', 'criteri']
+                    desc_text = None
+                    for desc_key in desc_keys:
+                        if desc_key in criterio and criterio[desc_key]:
+                            desc_value = _extract_multilang_value(criterio[desc_key])
+                            if desc_value:
+                                desc_text = str(desc_value).strip()
+                                break
+
+                    # FILTRAR: Excluir si menciona solvencia o capacidad
+                    if desc_text:
+                        desc_lower = desc_text.lower()
+                        if any(palabra in desc_lower for palabra in palabras_excluir):
+                            continue  # Saltar este "criterio" (es solvencia, no criterio)
+
+                    # Buscar peso/ponderación
+                    peso_text = None
+                    if 'ponderacio' in criterio:
+                        peso_val = criterio['ponderacio']
+                        if isinstance(peso_val, (int, float)):
+                            peso_text = f"{peso_val}"
+                    else:
+                        peso_keys = ['peso', 'weight', 'puntos', 'points', 'percentage']
                         for peso_key in peso_keys:
                             if peso_key in criterio and criterio[peso_key]:
                                 peso_val = criterio[peso_key]
                                 if isinstance(peso_val, (int, float)):
-                                    peso_text = f"{peso_val}%"
+                                    peso_text = f"{peso_val}"
                                 else:
                                     peso_text = str(peso_val)
                                 break
 
-                        # Si tiene desglossament (formato Diputació), procesarlo
-                        if 'desglossament' in criterio and isinstance(criterio['desglossament'], list):
-                            for subcriterio in criterio['desglossament']:
-                                if isinstance(subcriterio, dict):
-                                    sub_desc = None
-                                    if 'descripcioCriteri' in subcriterio:
-                                        sub_desc = _extract_multilang_value(subcriterio['descripcioCriteri'])
-                                    elif 'tipusCriteri' in subcriterio:
-                                        sub_desc = _extract_multilang_value(subcriterio['tipusCriteri'])
+                    # Si tiene desglossament (formato Diputació), procesarlo
+                    if 'desglossament' in criterio and isinstance(criterio['desglossament'], list):
+                        for subcriterio in criterio['desglossament']:
+                            if isinstance(subcriterio, dict):
+                                sub_desc = None
+                                if 'descripcioCriteri' in subcriterio:
+                                    sub_desc = _extract_multilang_value(subcriterio['descripcioCriteri'])
+                                elif 'tipusCriteri' in subcriterio:
+                                    sub_desc = _extract_multilang_value(subcriterio['tipusCriteri'])
 
-                                    sub_peso = None
-                                    if 'puntuacio' in subcriterio:
-                                        sub_peso = f"{subcriterio['puntuacio']}%"
+                                sub_peso = None
+                                if 'puntuacio' in subcriterio:
+                                    sub_peso = f"{subcriterio['puntuacio']}"
 
-                                    if sub_desc:
-                                        lote['criterios'].append(f"{sub_desc}: {sub_peso}" if sub_peso else sub_desc)
-                        else:
-                            # Añadir criterio normal
-                            if desc_text:
-                                criterio_str = f"{desc_text}: {peso_text}" if peso_text else desc_text
-                                lote['criterios'].append(criterio_str)
-                break
+                                if sub_desc:
+                                    lote['criterios'].append(f"{sub_desc}: {sub_peso} puntos" if sub_peso else sub_desc)
+                    else:
+                        # Añadir criterio normal
+                        if desc_text:
+                            criterio_str = f"{desc_text}: {peso_text} puntos" if peso_text else desc_text
+                            lote['criterios'].append(criterio_str)
 
         return lote if lote['presupuesto'] > 0 else None
 
