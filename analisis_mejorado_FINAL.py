@@ -493,10 +493,10 @@ def extraer_lote_json(lote_data, numero_lote, titulo_general=''):
         return None
 
 def extraer_palabras_clave(texto):
-    """Extraer palabras clave relevantes del título"""
+    """Extraer palabras clave ESPECÍFICAS más relevantes del título"""
     # Normalizar texto
-    texto = texto.lower()
-    texto = re.sub(r'[áàäâ]', 'a', texto)
+    texto_original = texto.lower()
+    texto = re.sub(r'[áàäâ]', 'a', texto_original)
     texto = re.sub(r'[éèëê]', 'e', texto)
     texto = re.sub(r'[íìïî]', 'i', texto)
     texto = re.sub(r'[óòöô]', 'o', texto)
@@ -505,18 +505,92 @@ def extraer_palabras_clave(texto):
 
     palabras = texto.split()
 
-    # Palabras a ignorar
+    # Palabras GENÉRICAS a ignorar (ampliado)
     ignorar = {
-        'de', 'del', 'la', 'el', 'los', 'las', 'y', 'a', 'en', 'para', 'con', 'por',
-        'contrato', 'servicio', 'servicios', 'suministro', 'obra', 'obras', 'lote',
-        'mediante', 'procedimiento', 'abierto', 'simplificado', 'menor',
-        'ayuntamiento', 'diputacion', 'municipal'
+        # Artículos, preposiciones
+        'de', 'del', 'la', 'el', 'los', 'las', 'y', 'a', 'en', 'para', 'con', 'por', 'al', 'un', 'una',
+        # Palabras contractuales
+        'contrato', 'servicio', 'servicios', 'suministro', 'obra', 'obras', 'lote', 'lotes',
+        'mediante', 'procedimiento', 'abierto', 'simplificado', 'menor', 'contratos',
+        # Entidades
+        'ayuntamiento', 'diputacion', 'municipal', 'concejo', 'consell', 'junta',
+        # Palabras muy genéricas que causan falsos positivos
+        'ampliacion', 'reforma', 'reformas', 'instalacion', 'instalaciones',
+        'mejora', 'mejoras', 'actuacion', 'actuaciones', 'ejecucion', 'ejecutar',
+        'proyecto', 'proyectos', 'trabajos', 'construccion', 'edificio', 'edificios',
+        'electrico', 'electrica', 'electricos', 'electricas',  # Demasiado genérico
+        'mantenimiento', 'conservacion', 'gestion', 'sistema', 'sistemas',
+        'equipos', 'equipo', 'materiales', 'material', 'diversos', 'diversas',
+        'general', 'generales', 'varios', 'varias', 'nuevo', 'nueva', 'nuevos', 'nuevas'
     }
 
-    # Filtrar palabras relevantes (más de 4 letras y no en lista de ignorar)
-    palabras_clave = [p for p in palabras if len(p) > 4 and p not in ignorar]
+    # PASO 1: Detectar bigramas (frases de 2 palabras) - más específicos
+    bigramas = []
+    for i in range(len(palabras) - 1):
+        if len(palabras[i]) > 3 and len(palabras[i+1]) > 3:
+            if palabras[i] not in ignorar and palabras[i+1] not in ignorar:
+                bigrama = f"{palabras[i]} {palabras[i+1]}"
+                bigramas.append(bigrama)
 
-    return set(palabras_clave)
+    # PASO 2: Filtrar palabras individuales (más de 5 letras y no genéricas)
+    palabras_individuales = [p for p in palabras if len(p) > 5 and p not in ignorar]
+
+    # PASO 3: Detectar palabras NÚCLEO (muy específicas de la actividad)
+    # Estas son palabras que por sí solas identifican claramente la actividad
+    palabras_nucleo = []
+
+    # Palabras específicas de actividades (no genéricas)
+    palabras_especificas = {
+        # Vehículos y transporte
+        'vehiculos', 'automoviles', 'camiones', 'autobuses', 'turismos', 'motos', 'furgonetas',
+        # Energía específica
+        'recarga', 'fotovoltaica', 'fotovoltaico', 'solar', 'eolica', 'biomasa', 'cogeneracion',
+        # Servicios específicos
+        'limpieza', 'jardineria', 'seguridad', 'vigilancia', 'catering', 'comedor', 'transporte',
+        'mensajeria', 'lavanderia', 'desinfeccion', 'fumigacion', 'desratizacion',
+        # Tecnología específica
+        'software', 'hardware', 'informatica', 'telecomunicaciones', 'fibra', 'servidor',
+        'base', 'datos', 'backup', 'firewall', 'router', 'switch', 'cableado',
+        # Construcción específica
+        'asfaltado', 'pavimentacion', 'acerado', 'alumbrado', 'alcantarillado', 'fontaneria',
+        'carpinteria', 'cerrajeria', 'climatizacion', 'calefaccion', 'refrigeracion',
+        # Áreas específicas
+        'piscina', 'polideportivo', 'biblioteca', 'museo', 'teatro', 'auditorio',
+        'residencia', 'colegio', 'escuela', 'hospital', 'centro', 'parque',
+        # Servicios públicos específicos
+        'residuos', 'basuras', 'reciclaje', 'contenedores', 'recogida',
+        'abastecimiento', 'depuracion', 'potabilizacion', 'saneamiento'
+    }
+
+    for palabra in palabras_individuales:
+        if palabra in palabras_especificas:
+            palabras_nucleo.append(palabra)
+
+    # PASO 4: Seleccionar las mejores palabras clave
+    palabras_finales = set()
+
+    # Prioridad 1: Bigramas (muy específicos)
+    if bigramas:
+        # Tomar el primer bigrama encontrado (suele ser el más relevante)
+        palabras_finales.add(bigramas[0])
+
+    # Prioridad 2: Palabras núcleo (específicas de actividad)
+    if palabras_nucleo:
+        # Tomar hasta 2 palabras núcleo
+        for palabra in palabras_nucleo[:2]:
+            palabras_finales.add(palabra)
+
+    # Prioridad 3: Si no hay suficientes, añadir las palabras individuales más largas
+    # (las palabras más largas suelen ser más específicas)
+    if len(palabras_finales) < 3:
+        palabras_ordenadas = sorted(palabras_individuales, key=len, reverse=True)
+        for palabra in palabras_ordenadas:
+            if len(palabras_finales) >= 3:
+                break
+            if palabra not in ' '.join(palabras_finales):  # Evitar duplicados
+                palabras_finales.add(palabra)
+
+    return palabras_finales
 
 def calcular_similitud_palabras(titulo_base, titulo_comparar):
     """Calcular similitud basada en palabras clave comunes"""
