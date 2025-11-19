@@ -796,14 +796,19 @@ def generar_texto_informe(lote, contratos, baja_prom, baja_min, baja_max, empres
     # Criterios de adjudicación
     if lote['criterios']:
         for i, crit in enumerate(lote['criterios'], 1):
-            desc = crit.get('descripcion', f'Criterio {i}')
-            peso = crit.get('peso', '')
-            if peso:
-                # Limpiar el peso (quitar % si existe, etc.)
-                peso_limpio = peso.strip().replace('%', '')
-                texto += f"{desc.upper()}: {peso_limpio} puntos\n"
+            # Manejar tanto strings como diccionarios
+            if isinstance(crit, dict):
+                desc = crit.get('descripcion', f'Criterio {i}')
+                peso = crit.get('peso', '')
+                if peso:
+                    # Limpiar el peso (quitar % si existe, etc.)
+                    peso_limpio = peso.strip().replace('%', '')
+                    texto += f"{desc.upper()}: {peso_limpio} puntos\n"
+                else:
+                    texto += f"{desc.upper()}\n"
             else:
-                texto += f"{desc.upper()}\n"
+                # Es un string (formato JSON)
+                texto += f"{str(crit).upper()}\n"
     else:
         texto += "OFERTA ECONÓMICA: 100 puntos\n"
 
@@ -1012,11 +1017,16 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 st.markdown("### ⚖️ Criterios de Adjudicación")
                 if lote['criterios']:
                     for i, crit in enumerate(lote['criterios'], 1):
-                        desc = crit.get('descripcion', f'Criterio {i}')
-                        peso = crit.get('peso', '')
-                        st.write(f"**{i}.** {desc}: **{peso}**" if peso else f"**{i}.** {desc}")
+                        # Manejar tanto strings como diccionarios
+                        if isinstance(crit, dict):
+                            desc = crit.get('descripcion', f'Criterio {i}')
+                            peso = crit.get('peso', '')
+                            st.write(f"**{i}.** {desc}: **{peso}**" if peso else f"**{i}.** {desc}")
+                        else:
+                            # Es un string
+                            st.write(f"**{i}.** {crit}")
                 else:
-                    st.info("ℹ️ No se encontraron criterios de adjudicación en el XML")
+                    st.info("ℹ️ No se encontraron criterios de adjudicación")
 
                 # Buscar contratos
                 if lote['cpv'] and lote['presupuesto'] > 0:
