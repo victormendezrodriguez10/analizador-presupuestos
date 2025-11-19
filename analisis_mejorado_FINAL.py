@@ -262,40 +262,67 @@ def extraer_datos_json_completo(json_data):
             'lotes': []
         }
 
-        # BUSCAR TÍTULO
-        titulo_keys = ['titulo', 'title', 'name', 'objeto', 'description', 'asunto', 'denominacion', 'denominacio']
-        for key in titulo_keys:
-            value = _find_json_value(data, key)
-            if value:
-                titulo_text = _extract_multilang_value(value)
-                if titulo_text:
+        # BUSCAR TÍTULO - Intentar rutas específicas primero
+        # Para JSONs de Diputació de Barcelona
+        if 'publicacio' in data and 'dadesBasiquesPublicacio' in data['publicacio']:
+            dades = data['publicacio']['dadesBasiquesPublicacio']
+            if 'denominacio' in dades:
+                titulo_text = _extract_multilang_value(dades['denominacio'])
+                if titulo_text and len(str(titulo_text).strip()) > 15:
                     datos['titulo'] = str(titulo_text).strip()
-                    break
 
-        # BUSCAR ORGANISMO
-        organismo_keys = ['organismo', 'entidad', 'organo', 'organ', 'buyer', 'contracting_authority', 'contratante', 'administracion', 'nom']
-        for key in organismo_keys:
-            value = _find_json_value(data, key)
-            if value:
-                # Si el valor es un objeto (como 'organ'), buscar 'nom' o 'name' dentro
-                if isinstance(value, dict) and ('nom' in value or 'name' in value):
-                    datos['organismo'] = str(value.get('nom') or value.get('name')).strip()
-                    break
-                else:
-                    organismo_text = _extract_multilang_value(value)
-                    if organismo_text:
-                        datos['organismo'] = str(organismo_text).strip()
+        # Si no se encontró, buscar genéricamente
+        if not datos['titulo']:
+            titulo_keys = ['titulo', 'title', 'name', 'objeto', 'description', 'asunto', 'denominacion', 'denominacio']
+            for key in titulo_keys:
+                value = _find_json_value(data, key)
+                if value:
+                    titulo_text = _extract_multilang_value(value)
+                    if titulo_text and len(str(titulo_text).strip()) > 15:
+                        datos['titulo'] = str(titulo_text).strip()
                         break
 
-        # BUSCAR UBICACIÓN
-        ubicacion_keys = ['ubicacion', 'lugar', 'provincia', 'localitat', 'location', 'place', 'region', 'city', 'address', 'llocExecucio']
-        for key in ubicacion_keys:
-            value = _find_json_value(data, key)
-            if value:
-                ubicacion_text = _extract_multilang_value(value)
-                if ubicacion_text:
-                    datos['ubicacion'] = str(ubicacion_text).strip()
-                    break
+        # BUSCAR ORGANISMO - Intentar ruta específica primero
+        if 'organ' in data and isinstance(data['organ'], dict):
+            if 'nom' in data['organ']:
+                datos['organismo'] = str(data['organ']['nom']).strip()
+
+        # Si no se encontró, buscar genéricamente
+        if not datos['organismo']:
+            organismo_keys = ['organismo', 'entidad', 'organo', 'organ', 'buyer', 'contracting_authority', 'contratante', 'administracion', 'nom']
+            for key in organismo_keys:
+                value = _find_json_value(data, key)
+                if value:
+                    # Si el valor es un objeto (como 'organ'), buscar 'nom' o 'name' dentro
+                    if isinstance(value, dict) and ('nom' in value or 'name' in value):
+                        datos['organismo'] = str(value.get('nom') or value.get('name')).strip()
+                        break
+                    else:
+                        organismo_text = _extract_multilang_value(value)
+                        if organismo_text:
+                            datos['organismo'] = str(organismo_text).strip()
+                            break
+
+        # BUSCAR UBICACIÓN - Intentar ruta específica primero
+        # Para JSONs de Diputació (llocExecucio en dadesPublicacioLot)
+        if 'publicacio' in data and 'dadesPublicacioLot' in data['publicacio']:
+            if len(data['publicacio']['dadesPublicacioLot']) > 0:
+                lot = data['publicacio']['dadesPublicacioLot'][0]
+                if 'llocExecucio' in lot:
+                    ubicacion_text = _extract_multilang_value(lot['llocExecucio'])
+                    if ubicacion_text:
+                        datos['ubicacion'] = str(ubicacion_text).strip()
+
+        # Si no se encontró, buscar genéricamente
+        if not datos['ubicacion']:
+            ubicacion_keys = ['ubicacion', 'lugar', 'provincia', 'localitat', 'location', 'place', 'region', 'city', 'address', 'llocExecucio']
+            for key in ubicacion_keys:
+                value = _find_json_value(data, key)
+                if value:
+                    ubicacion_text = _extract_multilang_value(value)
+                    if ubicacion_text:
+                        datos['ubicacion'] = str(ubicacion_text).strip()
+                        break
 
         # BUSCAR LOTES (o usar el documento completo como un único lote)
         lotes_data = _find_json_value(data, 'dadesPublicacioLot') or _find_json_value(data, 'lotes') or _find_json_value(data, 'lots')
@@ -303,12 +330,12 @@ def extraer_datos_json_completo(json_data):
         if lotes_data and isinstance(lotes_data, list):
             # Hay lotes definidos
             for idx, lote_data in enumerate(lotes_data, 1):
-                lote = extraer_lote_json(lote_data, idx)
+                lote = extraer_lote_json(lote_data, idx, datos['titulo'])
                 if lote:
                     datos['lotes'].append(lote)
         else:
             # No hay lotes, usar el documento completo como un único lote
-            lote = extraer_lote_json(data, 1)
+            lote = extraer_lote_json(data, 1, datos['titulo'])
             if lote:
                 datos['lotes'].append(lote)
 
@@ -319,7 +346,7 @@ def extraer_datos_json_completo(json_data):
         st.error(traceback.format_exc())
         return None
 
-def extraer_lote_json(lote_data, numero_lote):
+def extraer_lote_json(lote_data, numero_lote, titulo_general=''):
     """Extraer información de un lote desde JSON"""
     try:
         lote = {
@@ -340,6 +367,10 @@ def extraer_lote_json(lote_data, numero_lote):
                     lote['titulo'] = str(titulo_text).strip()
                     break
 
+        # Si no se encontró título, usar el título general del contrato
+        if not lote['titulo'] and titulo_general:
+            lote['titulo'] = titulo_general
+
         # BUSCAR PRESUPUESTO
         presupuesto_keys = ['presupuesto', 'pressupost', 'pressupostLicitacio', 'pressupostBaseLicitacioAmbIva',
                           'precio', 'valor', 'importe', 'amount', 'budget', 'value', 'estimatedValue']
@@ -358,34 +389,50 @@ def extraer_lote_json(lote_data, numero_lote):
                 except:
                     continue
 
-        # BUSCAR CPV
-        cpv_keys = ['cpv', 'cpvPrincipal', 'codigo', 'codi', 'classification', 'classificationCode', 'cpv_code']
-        for key in cpv_keys:
-            value = _find_json_value(lote_data, key)
-            if value:
-                # Si es un objeto (como cpvPrincipal), buscar 'codi' o 'codigo'
-                if isinstance(value, dict):
-                    cpv_value = value.get('codi') or value.get('codigo') or value.get('code')
-                    if cpv_value:
-                        lote['cpv'].append(str(cpv_value).strip())
-                        break
-                # Si es una lista, tomar todos los códigos
-                elif isinstance(value, list):
-                    for item in value:
-                        if isinstance(item, dict):
-                            cpv_value = item.get('codi') or item.get('codigo') or item.get('code')
-                            if cpv_value:
-                                lote['cpv'].append(str(cpv_value).strip())
-                        elif isinstance(item, str) and item.strip():
-                            lote['cpv'].append(item.strip())
-                    if lote['cpv']:
-                        break
-                else:
-                    # Si es string, añadirlo directamente
-                    cpv_str = str(value).strip()
-                    if cpv_str:
-                        lote['cpv'].append(cpv_str)
-                        break
+        # BUSCAR CPV - Intentar ruta específica primero
+        if 'cpvPrincipal' in lote_data and isinstance(lote_data['cpvPrincipal'], dict):
+            if 'codi' in lote_data['cpvPrincipal']:
+                cpv_code = str(lote_data['cpvPrincipal']['codi']).strip()
+                if cpv_code:
+                    lote['cpv'].append(cpv_code)
+
+        # Si no se encontró, buscar CPVs secundarios
+        if 'cpvsSecundaris' in lote_data and isinstance(lote_data['cpvsSecundaris'], list):
+            for cpv_item in lote_data['cpvsSecundaris']:
+                if isinstance(cpv_item, dict) and 'codi' in cpv_item:
+                    cpv_code = str(cpv_item['codi']).strip()
+                    if cpv_code:
+                        lote['cpv'].append(cpv_code)
+
+        # Si aún no hay CPV, buscar genéricamente
+        if not lote['cpv']:
+            cpv_keys = ['cpv', 'cpvPrincipal', 'codigo', 'codi', 'classification', 'classificationCode', 'cpv_code']
+            for key in cpv_keys:
+                value = _find_json_value(lote_data, key)
+                if value:
+                    # Si es un objeto (como cpvPrincipal), buscar 'codi' o 'codigo'
+                    if isinstance(value, dict):
+                        cpv_value = value.get('codi') or value.get('codigo') or value.get('code')
+                        if cpv_value:
+                            lote['cpv'].append(str(cpv_value).strip())
+                            break
+                    # Si es una lista, tomar todos los códigos
+                    elif isinstance(value, list):
+                        for item in value:
+                            if isinstance(item, dict):
+                                cpv_value = item.get('codi') or item.get('codigo') or item.get('code')
+                                if cpv_value:
+                                    lote['cpv'].append(str(cpv_value).strip())
+                            elif isinstance(item, str) and item.strip():
+                                lote['cpv'].append(item.strip())
+                        if lote['cpv']:
+                            break
+                    else:
+                        # Si es string, añadirlo directamente
+                        cpv_str = str(value).strip()
+                        if cpv_str:
+                            lote['cpv'].append(cpv_str)
+                            break
 
         # BUSCAR CRITERIOS DE ADJUDICACIÓN
         criterios_keys = ['criterios', 'criterisAdjudicacio', 'criteria', 'awardingCriteria', 'evaluationCriteria']
@@ -1005,13 +1052,25 @@ if st.button("🚀 Analizar Contrato", type="primary"):
             source_name = "XML" if source_type == "XML (URL)" else "JSON"
             st.success(f"✅ {source_name} procesado - {len(datos['lotes'])} lote(s) encontrado(s)")
 
+            # Mostrar datos extraídos
+            with st.expander("📋 Datos extraídos del documento"):
+                st.write(f"**Título:** {datos.get('titulo', 'No detectado')}")
+                st.write(f"**Organismo:** {datos.get('organismo', 'No detectado')}")
+                st.write(f"**Ubicación:** {datos.get('ubicacion', 'No detectado')}")
+
             # Analizar cada lote
             for lote in datos['lotes']:
                 st.markdown("---")
-                st.markdown(f"## 📦 Lote {lote['numero']}: {lote['titulo'][:80]}")
+                st.markdown(f"## 📦 Lote {lote['numero']}: {lote['titulo'][:80] if lote['titulo'] else 'Sin título'}")
 
                 st.markdown(f"**Presupuesto:** €{lote['presupuesto']:,.2f}")
                 st.markdown(f"**CPV:** {', '.join(lote['cpv']) if lote['cpv'] else 'No especificado'}")
+
+                # Mostrar palabras clave extraídas del título
+                if lote['titulo']:
+                    palabras_clave = extraer_palabras_clave(lote['titulo'])
+                    if palabras_clave:
+                        st.markdown(f"**🔑 Palabras clave del título:** {', '.join(sorted(palabras_clave))}")
 
                 # Criterios
                 st.markdown("### ⚖️ Criterios de Adjudicación")
