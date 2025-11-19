@@ -144,7 +144,15 @@ def extraer_datos_xml_completo(url):
                                     criterio['peso'] = subchild.text.strip()
 
                         if criterio.get('descripcion'):
-                            lote['criterios'].append(criterio)
+                            # Filtrar solvencia y requisitos previos
+                            desc_lower = criterio['descripcion'].lower()
+                            palabras_excluir = ['solvencia', 'solvències', 'habilitacion', 'capacidad',
+                                              'acreditacion', 'declaracion responsable', 'certificado',
+                                              'clasificacion empresarial', 'experiencia acreditada']
+
+                            # Si contiene palabras de exclusión, no es criterio de adjudicación
+                            if not any(palabra in desc_lower for palabra in palabras_excluir):
+                                lote['criterios'].append(criterio)
 
                 if lote['presupuesto'] > 0 or lote['cpv']:
                     if not lote['numero']:
@@ -193,7 +201,15 @@ def extraer_datos_xml_completo(url):
                                 criterio['peso'] = child.text.strip()
 
                     if criterio.get('descripcion') and criterio not in lote_general['criterios']:
-                        lote_general['criterios'].append(criterio)
+                        # Filtrar solvencia y requisitos previos
+                        desc_lower = criterio['descripcion'].lower()
+                        palabras_excluir = ['solvencia', 'solvències', 'habilitacion', 'capacidad',
+                                          'acreditacion', 'declaracion responsable', 'certificado',
+                                          'clasificacion empresarial', 'experiencia acreditada']
+
+                        # Si contiene palabras de exclusión, no es criterio de adjudicación
+                        if not any(palabra in desc_lower for palabra in palabras_excluir):
+                            lote_general['criterios'].append(criterio)
 
             if lote_general['presupuesto'] > 0 or lote_general['cpv']:
                 datos['lotes'].append(lote_general)
@@ -960,9 +976,28 @@ def generar_texto_informe(lote, contratos, baja_prom, baja_min, baja_max, empres
     # Análisis de participación
     texto += f"{random.choice(intros_participacion)}\n"
 
-    # Empresas destacadas
+    # Empresas destacadas (priorizando las de la misma provincia)
     if empresas:
-        sorted_emp = sorted(empresas.items(), key=lambda x: x[1], reverse=True)[:5]
+        # Obtener provincia de origen (normalizada)
+        provincia_origen = ''
+        if datos:
+            provincia_origen = (datos.get('provincia') or datos.get('ubicacion') or '').strip().lower()
+
+        # Ordenar empresas: primero por provincia, luego por frecuencia
+        def ordenar_empresas(item):
+            nombre, info = item
+            # Si info es un dict (nuevo formato con provincia)
+            if isinstance(info, dict):
+                es_misma_provincia = 1 if info['provincia'] and info['provincia'] == provincia_origen else 0
+                frecuencia = info['frecuencia']
+            else:
+                # Formato antiguo (solo frecuencia)
+                es_misma_provincia = 0
+                frecuencia = info
+            # Devolver tupla: primero prioridad provincia (1=misma, 0=otra), luego frecuencia
+            return (es_misma_provincia, frecuencia)
+
+        sorted_emp = sorted(empresas.items(), key=ordenar_empresas, reverse=True)[:5]
         empresas_texto = ", ".join([emp for emp, _ in sorted_emp[:-1]])
         if len(sorted_emp) > 1:
             empresas_texto += f" y {sorted_emp[-1][0]}"
@@ -1246,15 +1281,20 @@ if st.button("🚀 Analizar Contrato", type="primary"):
 
                             st.markdown(f"**Rango de bajas:** {baja_min:.1f}% - {baja_max:.1f}%")
 
-                            # Generar diccionario de empresas
-                            empresas = {}
+                            # Generar diccionario de empresas con información de provincia
+                            empresas_data = {}
                             for c in contratos:
                                 emp = c['empresa']
                                 if emp and emp != 'N/A' and len(emp) > 3:
-                                    empresas[emp] = empresas.get(emp, 0) + 1
+                                    if emp not in empresas_data:
+                                        empresas_data[emp] = {
+                                            'frecuencia': 0,
+                                            'provincia': c.get('provincia', '').strip().lower() if c.get('provincia') else ''
+                                        }
+                                    empresas_data[emp]['frecuencia'] += 1
 
                             # Generar texto del informe
-                            texto_informe = generar_texto_informe(lote, contratos, baja_prom, baja_min, baja_max, empresas, num_lic_prom, {})
+                            texto_informe = generar_texto_informe(lote, contratos, baja_prom, baja_min, baja_max, empresas_data, num_lic_prom, datos)
 
                             # Sección de descarga y texto
                             st.markdown("---")
