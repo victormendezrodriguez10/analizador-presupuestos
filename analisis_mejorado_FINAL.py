@@ -115,14 +115,34 @@ def extraer_datos_xml_completo(url):
                             lote['titulo'] = child.text.strip()
                             break
 
+                # BUSCAR PRESUPUESTO - Priorizar PBL sobre valor estimado
+                importes_encontrados = {}
                 for child in elem.iter():
                     child_tag = get_tag_name(child)
                     if 'Amount' in child_tag and child.text:
                         try:
-                            lote['presupuesto'] = float(child.text.strip())
-                            break
+                            valor = float(child.text.strip())
+                            # Clasificar por tipo de importe
+                            if 'TaxExclusive' in child_tag or 'LineExtension' in child_tag:
+                                importes_encontrados['pbl_sin_iva'] = valor
+                            elif 'Payable' in child_tag or 'TaxInclusive' in child_tag:
+                                importes_encontrados['pbl_con_iva'] = valor
+                            elif 'Estimated' in child_tag:
+                                importes_encontrados['estimado'] = valor
+                            else:
+                                importes_encontrados['otro'] = valor
                         except:
                             pass
+
+                # Priorizar: PBL sin IVA > PBL con IVA > Estimado > Otro
+                if 'pbl_sin_iva' in importes_encontrados:
+                    lote['presupuesto'] = importes_encontrados['pbl_sin_iva']
+                elif 'pbl_con_iva' in importes_encontrados:
+                    lote['presupuesto'] = importes_encontrados['pbl_con_iva']
+                elif 'estimado' in importes_encontrados:
+                    lote['presupuesto'] = importes_encontrados['estimado']
+                elif 'otro' in importes_encontrados:
+                    lote['presupuesto'] = importes_encontrados['otro']
 
                 for child in elem.iter():
                     child_tag = get_tag_name(child)
@@ -169,15 +189,38 @@ def extraer_datos_xml_completo(url):
                 'criterios': []
             }
 
+            # BUSCAR PRESUPUESTO - Priorizar PBL sobre valor estimado
+            importes_encontrados = {}
             for elem in root.iter():
                 tag = get_tag_name(elem)
                 if 'Amount' in tag and elem.text:
                     try:
                         valor = float(elem.text.strip())
-                        if valor > lote_general['presupuesto']:
-                            lote_general['presupuesto'] = valor
+                        # Clasificar por tipo de importe
+                        if 'TaxExclusive' in tag or 'LineExtension' in tag:
+                            if 'pbl_sin_iva' not in importes_encontrados or valor > importes_encontrados['pbl_sin_iva']:
+                                importes_encontrados['pbl_sin_iva'] = valor
+                        elif 'Payable' in tag or 'TaxInclusive' in tag:
+                            if 'pbl_con_iva' not in importes_encontrados or valor > importes_encontrados['pbl_con_iva']:
+                                importes_encontrados['pbl_con_iva'] = valor
+                        elif 'Estimated' in tag:
+                            if 'estimado' not in importes_encontrados or valor > importes_encontrados['estimado']:
+                                importes_encontrados['estimado'] = valor
+                        else:
+                            if 'otro' not in importes_encontrados or valor > importes_encontrados['otro']:
+                                importes_encontrados['otro'] = valor
                     except:
                         pass
+
+            # Priorizar: PBL sin IVA > PBL con IVA > Estimado > Otro
+            if 'pbl_sin_iva' in importes_encontrados:
+                lote_general['presupuesto'] = importes_encontrados['pbl_sin_iva']
+            elif 'pbl_con_iva' in importes_encontrados:
+                lote_general['presupuesto'] = importes_encontrados['pbl_con_iva']
+            elif 'estimado' in importes_encontrados:
+                lote_general['presupuesto'] = importes_encontrados['estimado']
+            elif 'otro' in importes_encontrados:
+                lote_general['presupuesto'] = importes_encontrados['otro']
 
             for elem in root.iter():
                 tag = get_tag_name(elem)
