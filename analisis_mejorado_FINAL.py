@@ -777,12 +777,21 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
     if isinstance(cpvs, str):
         cpvs = [cpvs]
 
-    # Extraer primeros 4 dígitos del CPV
+    # Extraer CPV según si es búsqueda ampliada o normal
     cpv_patterns = []
-    for cpv in cpvs[:3]:
-        cpv_digits = ''.join(filter(str.isdigit, str(cpv)))
-        if len(cpv_digits) >= 4:
-            cpv_patterns.append(cpv_digits[:4])  # 4 dígitos
+    if ampliada:
+        # Búsqueda ampliada: usar primeros 2 dígitos (más flexible)
+        for cpv in cpvs[:3]:
+            cpv_digits = ''.join(filter(str.isdigit, str(cpv)))
+            if len(cpv_digits) >= 2:
+                cpv_patterns.append(cpv_digits[:2])  # 2 dígitos (más amplio)
+        st.warning(f"🔄 **Búsqueda ampliada**: CPV primeros 2 dígitos (más flexible)")
+    else:
+        # Búsqueda normal: usar primeros 4 dígitos
+        for cpv in cpvs[:3]:
+            cpv_digits = ''.join(filter(str.isdigit, str(cpv)))
+            if len(cpv_digits) >= 4:
+                cpv_patterns.append(cpv_digits[:4])  # 4 dígitos
 
     if not cpv_patterns:
         st.warning("❌ No se pudieron extraer CPVs válidos")
@@ -791,7 +800,10 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
     # Eliminar duplicados
     cpv_patterns = list(set(cpv_patterns))
 
-    st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 4 dígitos)")
+    if ampliada:
+        st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 2 dígitos)")
+    else:
+        st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 4 dígitos)")
 
     cpv_condition = " OR ".join([f"cpv::text ~ '^{cpv}'" for cpv in cpv_patterns])
 
@@ -800,12 +812,16 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
     # Rango de presupuesto según si es búsqueda ampliada o normal
     if ampliada:
-        # ±50% del objetivo
-        presupuesto_min_rango = presupuesto_objetivo * 0.5
-        presupuesto_max_rango = presupuesto_objetivo * 1.5
-        st.warning(f"🔄 **Búsqueda ampliada** - Rango presupuesto (±50%): €{presupuesto_min_rango:,.0f} - €{presupuesto_max_rango:,.0f}")
+        # Búsqueda ampliada: ±100% del objetivo (más flexible)
+        presupuesto_min_rango = presupuesto_objetivo * 0.3
+        presupuesto_max_rango = presupuesto_objetivo * 2.0
+        if provincia_origen:
+            st.warning(f"🔄 **Búsqueda ampliada** - Rango presupuesto (±100%): €{presupuesto_min_rango:,.0f} - €{presupuesto_max_rango:,.0f}")
+            st.info(f"💡 **Manteniendo**: Palabra clave + Provincia ({provincia_origen})")
+        else:
+            st.warning(f"🔄 **Búsqueda ampliada** - Rango presupuesto (±100%): €{presupuesto_min_rango:,.0f} - €{presupuesto_max_rango:,.0f}")
     else:
-        # ±30% del objetivo
+        # Búsqueda normal: ±30% del objetivo
         presupuesto_min_rango = presupuesto_objetivo * 0.7
         presupuesto_max_rango = presupuesto_objetivo * 1.3
         st.info(f"💰 **Rango presupuesto (±30%)**: €{presupuesto_min_rango:,.0f} - €{presupuesto_max_rango:,.0f}")
@@ -885,6 +901,9 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
         # FILTRAR POR SIMILITUD DE PALABRAS CLAVE
         if titulo_referencia or palabras_clave_manual:
+            # Guardar results originales ANTES de filtrar por palabras clave (para fallback geográfico)
+            results_sin_filtro_palabras = results.copy()
+
             # Usar palabras clave manuales si están disponibles, si no extraerlas automáticamente
             if palabras_clave_manual:
                 # Procesar palabras clave manuales
@@ -1576,7 +1595,11 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                     # Si hay menos de 3 contratos, hacer búsqueda ampliada
                     if len(contratos) < 3:
                         st.warning(f"⚠️ Solo se encontraron {len(contratos)} contrato(s). Ampliando búsqueda...")
-                        with st.spinner("Buscando con criterios ampliados (±50% presupuesto, todas las fechas)..."):
+                        if provincia_busqueda:
+                            st.info(f"🔄 **Ampliando CPV (2 dígitos) y presupuesto (±100%), manteniendo palabra clave + provincia**")
+                        else:
+                            st.info(f"🔄 **Ampliando CPV (2 dígitos) y presupuesto (±100%), manteniendo palabra clave**")
+                        with st.spinner("Buscando con criterios ampliados..."):
                             contratos = buscar_contratos(
                                 lote['cpv'],
                                 pres_min,
