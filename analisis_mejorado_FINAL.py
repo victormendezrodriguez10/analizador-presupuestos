@@ -989,7 +989,7 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 for c in results:
                     c['proximidad'] = 0
 
-            # SISTEMA DE FILTRADO POR NIVELES
+            # SISTEMA DE FILTRADO POR NIVELES CON PRIORIZACIÓN INTELIGENTE
             # Nivel 1: Palabras clave + Zona + Recientes (últimos 2 años)
             fecha_limite = datetime.now() - pd.DateOffset(years=2)
             nivel_1 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 1
@@ -998,24 +998,36 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
             # Nivel 2: Palabras clave + Zona (sin filtro de fecha)
             nivel_2 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 1]
 
-            # Nivel 3: Solo palabras clave
-            nivel_3 = [c for c in results if c['num_palabras_comunes'] > 0]
+            # Nivel 3: Solo palabras clave (otras provincias)
+            nivel_3 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 0]
 
-            # Seleccionar el nivel adecuado
+            # ESTRATEGIA INTELIGENTE: Priorizar SIEMPRE misma provincia si existe
             if len(nivel_1) >= limit:
+                # Ideal: Hay suficientes contratos recientes de la misma zona
                 results_finales = nivel_1
                 st.success(f"✅ **Nivel 1**: {len(nivel_1)} contratos (Palabras clave + Misma zona + Recientes)")
             elif len(nivel_2) >= limit:
+                # Bueno: Hay suficientes contratos de la misma zona (aunque no sean recientes)
                 results_finales = nivel_2
                 st.info(f"ℹ️ **Nivel 2**: {len(nivel_2)} contratos (Palabras clave + Misma zona)")
+            elif len(nivel_2) > 0:
+                # Hay algunos contratos de la misma zona pero no suficientes
+                # PRIORIZAR: Mostrar primero los de la misma zona, luego completar con otros
+                results_finales = nivel_2 + nivel_3
+                st.warning(f"⚠️ **Nivel mixto**: {len(nivel_2)} contratos de misma zona + {len(nivel_3)} de otras zonas")
+                st.info(f"💡 **Se priorizan los {len(nivel_2)} contratos de la misma provincia**")
             else:
+                # No hay ningún contrato de la misma zona
                 results_finales = nivel_3
-                st.warning(f"⚠️ **Nivel 3**: {len(nivel_3)} contratos (Solo palabras clave)")
+                if provincia_origen:
+                    st.warning(f"⚠️ **Nivel 3**: {len(nivel_3)} contratos (No se encontraron en {provincia_origen})")
+                else:
+                    st.warning(f"⚠️ **Nivel 3**: {len(nivel_3)} contratos (Solo palabras clave)")
 
-            # ORDENAR: por número de palabras comunes, luego proximidad, luego fecha
+            # ORDENAR: PRIMERO por proximidad (misma provincia primero), LUEGO por palabras comunes, LUEGO por fecha
             results_finales.sort(key=lambda x: (
+                x.get('proximidad', 0),  # 1 = misma provincia, 0 = otra provincia
                 x['num_palabras_comunes'],
-                x.get('proximidad', 0),
                 x['fecha_publicacion'] if x['fecha_publicacion'] else datetime(1900, 1, 1)
             ), reverse=True)
 
@@ -1024,8 +1036,17 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
             results = results_finales
 
             # Mostrar los primeros 10
-            st.write("**Contratos encontrados (ordenados por palabras coincidentes + zona + fecha):**")
-            for i, c in enumerate(results[:10], 1):
+            # Contar cuántos son de la misma provincia en los 10 primeros
+            contratos_mostrar = results[:10]
+            num_misma_provincia = sum(1 for c in contratos_mostrar if c.get('proximidad', 0) == 1)
+            num_otras_provincias = len(contratos_mostrar) - num_misma_provincia
+
+            if provincia_origen and num_misma_provincia > 0:
+                st.write(f"**Contratos encontrados:** {num_misma_provincia} de {provincia_origen} (📍), {num_otras_provincias} de otras provincias (📌)")
+            else:
+                st.write("**Contratos encontrados (ordenados por relevancia):**")
+
+            for i, c in enumerate(contratos_mostrar, 1):
                 fecha_str = str(c['fecha_publicacion'])[:10] if c['fecha_publicacion'] else 'N/A'
                 # Usar las palabras comunes ya calculadas
                 palabras_comunes = c.get('palabras_comunes', set())
