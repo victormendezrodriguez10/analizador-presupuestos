@@ -891,21 +891,28 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 palabras_objetivo = extraer_palabras_clave(titulo_referencia)
                 st.info(f"🎯 **Palabras clave extraídas automáticamente**: {', '.join(sorted(palabras_objetivo))}")
 
-            # Calcular similitud para cada contrato
+            # Calcular palabras coincidentes y similitud para cada contrato
             for c in results:
+                palabras_contrato = extraer_palabras_clave(c['titulo'])
+
                 if palabras_clave_manual:
-                    # Si hay palabras manuales, calcular similitud directamente con ellas
-                    palabras_contrato = extraer_palabras_clave(c['titulo'])
+                    # Si hay palabras manuales, calcular con ellas
                     comunes = palabras_objetivo.intersection(palabras_contrato)
+                    c['num_palabras_comunes'] = len(comunes)
+                    c['palabras_comunes'] = comunes
                     if palabras_objetivo and palabras_contrato:
                         c['similitud'] = len(comunes) / ((len(palabras_objetivo) + len(palabras_contrato)) / 2)
                     else:
                         c['similitud'] = 0
                 else:
+                    # Usar sistema automático
+                    comunes = palabras_objetivo.intersection(palabras_contrato)
+                    c['num_palabras_comunes'] = len(comunes)
+                    c['palabras_comunes'] = comunes
                     c['similitud'] = calcular_similitud_palabras(titulo_referencia, c['titulo'])
 
             # FILTRAR: solo contratos con al menos 1 palabra en común
-            results_filtrados = [c for c in results if c['similitud'] > 0]
+            results_filtrados = [c for c in results if c['num_palabras_comunes'] > 0]
 
             st.info(f"🔍 **Contratos con palabras clave en común**: {len(results_filtrados)}")
 
@@ -920,42 +927,93 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
             results = results_filtrados
 
-            # Calcular proximidad geográfica
+            # Función para normalizar texto (quitar acentos, minúsculas, espacios)
+            def normalizar_texto(texto):
+                if not texto:
+                    return ''
+                texto = texto.lower().strip()
+                # Quitar acentos
+                texto = re.sub(r'[áàäâ]', 'a', texto)
+                texto = re.sub(r'[éèëê]', 'e', texto)
+                texto = re.sub(r'[íìïî]', 'i', texto)
+                texto = re.sub(r'[óòöô]', 'o', texto)
+                texto = re.sub(r'[úùüû]', 'u', texto)
+                # Quitar caracteres especiales excepto espacios
+                texto = re.sub(r'[^a-z0-9\s]', '', texto)
+                return texto
+
+            # Calcular proximidad geográfica mejorada
             if provincia_origen:
+                provincia_norm = normalizar_texto(provincia_origen)
                 st.info(f"📍 **Provincia de origen**: {provincia_origen}")
+
                 for c in results:
-                    # Proximidad: 1 si coincide la provincia, 0 si no
-                    provincia_contrato = c.get('provincia', '').strip().lower() if c.get('provincia') else ''
-                    provincia_ref = provincia_origen.strip().lower()
-                    c['proximidad'] = 1 if provincia_contrato and provincia_contrato == provincia_ref else 0
+                    provincia_contrato = c.get('provincia', '')
+                    provincia_contrato_norm = normalizar_texto(provincia_contrato)
+
+                    # Matching mejorado: coincidencia exacta o subcadena
+                    if provincia_contrato_norm and provincia_norm:
+                        # Coincidencia exacta
+                        if provincia_contrato_norm == provincia_norm:
+                            c['proximidad'] = 1
+                        # Uno contiene al otro (ej: "Madrid" en "Comunidad de Madrid")
+                        elif provincia_norm in provincia_contrato_norm or provincia_contrato_norm in provincia_norm:
+                            c['proximidad'] = 1
+                        else:
+                            c['proximidad'] = 0
+                    else:
+                        c['proximidad'] = 0
             else:
                 # Sin provincia origen, todos tienen misma proximidad
                 for c in results:
                     c['proximidad'] = 0
 
-            # ORDENAR: primero por similitud, luego por proximidad geográfica, luego por fecha
-            results.sort(key=lambda x: (
-                x['similitud'],
+            # SISTEMA DE FILTRADO POR NIVELES
+            # Nivel 1: Palabras clave + Zona + Recientes (últimos 2 años)
+            fecha_limite = datetime.now() - pd.DateOffset(years=2)
+            nivel_1 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 1
+                      and c['fecha_publicacion'] and c['fecha_publicacion'] >= fecha_limite]
+
+            # Nivel 2: Palabras clave + Zona (sin filtro de fecha)
+            nivel_2 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 1]
+
+            # Nivel 3: Solo palabras clave
+            nivel_3 = [c for c in results if c['num_palabras_comunes'] > 0]
+
+            # Seleccionar el nivel adecuado
+            if len(nivel_1) >= limit:
+                results_finales = nivel_1
+                st.success(f"✅ **Nivel 1**: {len(nivel_1)} contratos (Palabras clave + Misma zona + Recientes)")
+            elif len(nivel_2) >= limit:
+                results_finales = nivel_2
+                st.info(f"ℹ️ **Nivel 2**: {len(nivel_2)} contratos (Palabras clave + Misma zona)")
+            else:
+                results_finales = nivel_3
+                st.warning(f"⚠️ **Nivel 3**: {len(nivel_3)} contratos (Solo palabras clave)")
+
+            # ORDENAR: por número de palabras comunes, luego proximidad, luego fecha
+            results_finales.sort(key=lambda x: (
+                x['num_palabras_comunes'],
                 x.get('proximidad', 0),
                 x['fecha_publicacion'] if x['fecha_publicacion'] else datetime(1900, 1, 1)
             ), reverse=True)
 
-            st.success(f"✅ **Mostrando los {min(limit, len(results))} contratos más relevantes**")
+            st.success(f"✅ **Mostrando los {min(limit, len(results_finales))} contratos más relevantes**")
+
+            results = results_finales
 
             # Mostrar los primeros 10
-            st.write("**Contratos encontrados (ordenados por relevancia + proximidad + recencia):**")
+            st.write("**Contratos encontrados (ordenados por palabras coincidentes + zona + fecha):**")
             for i, c in enumerate(results[:10], 1):
                 fecha_str = str(c['fecha_publicacion'])[:10] if c['fecha_publicacion'] else 'N/A'
-                # Calcular palabras comunes según el origen de las palabras clave
-                if palabras_clave_manual:
-                    palabras_comunes = palabras_objetivo.intersection(extraer_palabras_clave(c['titulo']))
-                else:
-                    palabras_comunes = extraer_palabras_clave(titulo_referencia).intersection(extraer_palabras_clave(c['titulo']))
+                # Usar las palabras comunes ya calculadas
+                palabras_comunes = c.get('palabras_comunes', set())
+                num_coincidencias = c.get('num_palabras_comunes', 0)
                 provincia_str = c.get('provincia', 'N/A')
                 proximidad_icon = "📍" if c.get('proximidad', 0) == 1 else "📌"
 
-                st.write(f"{i}. [{c['similitud']:.0%}] {proximidad_icon} [{provincia_str}] [{fecha_str}] {c['titulo'][:60]}")
-                st.write(f"   💡 Palabras clave: {', '.join(sorted(palabras_comunes))}")
+                st.write(f"{i}. [{num_coincidencias} palabra{'s' if num_coincidencias != 1 else ''} coincidente{'s' if num_coincidencias != 1 else ''}] {proximidad_icon} [{provincia_str}] [{fecha_str}] {c['titulo'][:60]}")
+                st.write(f"   💡 Palabras clave coincidentes: {', '.join(sorted(palabras_comunes))}")
 
         else:
             # Sin título, solo ordenar por fecha
