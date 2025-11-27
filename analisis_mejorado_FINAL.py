@@ -81,20 +81,14 @@ def extraer_datos_xml_completo(url):
         # BUSCAR UBICACIÓN (Ciudad y Provincia)
         for elem in root.iter():
             tag = get_tag_name(elem)
-            if tag == 'CityName' and elem.text and not datos.get('ubicacion'):
+            if tag == 'CityName' and elem.text:
                 datos['ubicacion'] = elem.text.strip()
-            if tag == 'CountrySubentityCode' and elem.text and not datos.get('provincia_codigo'):
+            if tag == 'CountrySubentityCode' and elem.text:
                 # Código de provincia (ej: ES-M para Madrid)
                 datos['provincia_codigo'] = elem.text.strip()
-            if tag == 'CountrySubentity' and elem.text and not datos.get('provincia'):
-                # Nombre de la provincia (ej: Madrid, Barcelona, etc.)
-                provincia_text = elem.text.strip()
-                if provincia_text and len(provincia_text) > 2:  # Asegurar que es un nombre válido
-                    datos['provincia'] = provincia_text
-
-        # Si no se encontró ubicación pero sí provincia, usar provincia como ubicación
-        if not datos.get('ubicacion') and datos.get('provincia'):
-            datos['ubicacion'] = datos['provincia']
+            if tag == 'CountrySubentity' and elem.text:
+                # Nombre de la provincia
+                datos['provincia'] = elem.text.strip()
 
         # BUSCAR LOTES
         for elem in root.iter():
@@ -824,7 +818,7 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
         fecha_publicacion,
         ROUND(((importe_total - importe_adjudicacion) / NULLIF(importe_total, 0) * 100)::numeric, 2) as baja,
         cpv,
-        provincia
+        INITCAP(LOWER(TRIM(provincia))) as provincia
     FROM adjudicaciones_metabase
     WHERE importe_total IS NOT NULL
     AND importe_adjudicacion IS NOT NULL
@@ -953,22 +947,40 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 provincia_norm = normalizar_texto(provincia_origen)
                 st.info(f"📍 **Provincia de origen**: {provincia_origen}")
 
+                # Contador para debug
+                provincias_encontradas = set()
+                contratos_misma_provincia = 0
+
                 for c in results:
                     provincia_contrato = c.get('provincia', '')
                     provincia_contrato_norm = normalizar_texto(provincia_contrato)
+
+                    if provincia_contrato:
+                        provincias_encontradas.add(provincia_contrato)
 
                     # Matching mejorado: coincidencia exacta o subcadena
                     if provincia_contrato_norm and provincia_norm:
                         # Coincidencia exacta
                         if provincia_contrato_norm == provincia_norm:
                             c['proximidad'] = 1
+                            contratos_misma_provincia += 1
                         # Uno contiene al otro (ej: "Madrid" en "Comunidad de Madrid")
                         elif provincia_norm in provincia_contrato_norm or provincia_contrato_norm in provincia_norm:
                             c['proximidad'] = 1
+                            contratos_misma_provincia += 1
                         else:
                             c['proximidad'] = 0
                     else:
                         c['proximidad'] = 0
+
+                # Mostrar info de debug
+                if contratos_misma_provincia > 0:
+                    st.success(f"✅ **{contratos_misma_provincia} contratos encontrados en {provincia_origen}**")
+                else:
+                    st.warning(f"⚠️ **No se encontraron contratos en {provincia_origen}**")
+                    if provincias_encontradas:
+                        provincias_lista = sorted(list(provincias_encontradas))[:10]
+                        st.info(f"🗺️ **Provincias disponibles**: {', '.join(provincias_lista)}")
             else:
                 # Sin provincia origen, todos tienen misma proximidad
                 for c in results:
@@ -1448,7 +1460,6 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 st.write(f"**Título:** {datos.get('titulo', 'No detectado')}")
                 st.write(f"**Organismo:** {datos.get('organismo', 'No detectado')}")
                 st.write(f"**Ubicación:** {datos.get('ubicacion', 'No detectado')}")
-                st.write(f"**Provincia:** {datos.get('provincia', 'No detectado')}")
 
             # Analizar cada lote
             for lote in datos['lotes']:
