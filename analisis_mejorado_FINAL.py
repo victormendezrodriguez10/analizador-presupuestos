@@ -81,14 +81,20 @@ def extraer_datos_xml_completo(url):
         # BUSCAR UBICACIÓN (Ciudad y Provincia)
         for elem in root.iter():
             tag = get_tag_name(elem)
-            if tag == 'CityName' and elem.text:
+            if tag == 'CityName' and elem.text and not datos.get('ubicacion'):
                 datos['ubicacion'] = elem.text.strip()
-            if tag == 'CountrySubentityCode' and elem.text:
+            if tag == 'CountrySubentityCode' and elem.text and not datos.get('provincia_codigo'):
                 # Código de provincia (ej: ES-M para Madrid)
                 datos['provincia_codigo'] = elem.text.strip()
-            if tag == 'CountrySubentity' and elem.text:
-                # Nombre de la provincia
-                datos['provincia'] = elem.text.strip()
+            if tag == 'CountrySubentity' and elem.text and not datos.get('provincia'):
+                # Nombre de la provincia (ej: Madrid, Barcelona, etc.)
+                provincia_text = elem.text.strip()
+                if provincia_text and len(provincia_text) > 2:  # Asegurar que es un nombre válido
+                    datos['provincia'] = provincia_text
+
+        # Si no se encontró ubicación pero sí provincia, usar provincia como ubicación
+        if not datos.get('ubicacion') and datos.get('provincia'):
+            datos['ubicacion'] = datos['provincia']
 
         # BUSCAR LOTES
         for elem in root.iter():
@@ -1442,6 +1448,7 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 st.write(f"**Título:** {datos.get('titulo', 'No detectado')}")
                 st.write(f"**Organismo:** {datos.get('organismo', 'No detectado')}")
                 st.write(f"**Ubicación:** {datos.get('ubicacion', 'No detectado')}")
+                st.write(f"**Provincia:** {datos.get('provincia', 'No detectado')}")
 
             # Analizar cada lote
             for lote in datos['lotes']:
