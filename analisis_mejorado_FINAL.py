@@ -82,13 +82,16 @@ def extraer_datos_xml_completo(url):
         for elem in root.iter():
             tag = get_tag_name(elem)
             if tag == 'CityName' and elem.text:
-                datos['ubicacion'] = elem.text.strip()
+                if not datos.get('ubicacion'):  # Solo tomar la primera
+                    datos['ubicacion'] = elem.text.strip()
             if tag == 'CountrySubentityCode' and elem.text:
                 # Código de provincia (ej: ES-M para Madrid)
-                datos['provincia_codigo'] = elem.text.strip()
+                if not datos.get('provincia_codigo'):  # Solo tomar el primero
+                    datos['provincia_codigo'] = elem.text.strip()
             if tag == 'CountrySubentity' and elem.text:
                 # Nombre de la provincia
-                datos['provincia'] = elem.text.strip()
+                if not datos.get('provincia'):  # Solo tomar la primera
+                    datos['provincia'] = elem.text.strip()
 
         # BUSCAR LOTES
         for elem in root.iter():
@@ -1460,6 +1463,10 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 st.write(f"**Título:** {datos.get('titulo', 'No detectado')}")
                 st.write(f"**Organismo:** {datos.get('organismo', 'No detectado')}")
                 st.write(f"**Ubicación:** {datos.get('ubicacion', 'No detectado')}")
+                if datos.get('provincia'):
+                    st.write(f"**📍 Provincia:** {datos.get('provincia')}")
+                else:
+                    st.write(f"**📍 Provincia:** No detectada (no se aplicará filtro geográfico)")
 
             # Analizar cada lote
             for lote in datos['lotes']:
@@ -1500,6 +1507,13 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                     pres_min = lote['presupuesto'] * 0.5
                     pres_max = lote['presupuesto'] * 1.5
 
+                    # Mostrar provincia que se usará para la búsqueda
+                    provincia_busqueda = datos.get('provincia')
+                    if provincia_busqueda:
+                        st.info(f"🌍 **Buscando contratos con filtro geográfico**: {provincia_busqueda}")
+                    else:
+                        st.info(f"🌍 **Buscando contratos sin filtro geográfico** (provincia no detectada en el documento)")
+
                     # Búsqueda normal
                     with st.spinner("Buscando contratos..."):
                         contratos = buscar_contratos(
@@ -1509,7 +1523,7 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                             titulo_referencia=lote['titulo'],
                             limit=10,
                             ampliada=False,
-                            provincia_origen=datos.get('provincia'),
+                            provincia_origen=provincia_busqueda,
                             palabras_clave_manual=palabras_clave_manual if palabras_clave_manual else None
                         )
 
@@ -1524,7 +1538,7 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                                 titulo_referencia=lote['titulo'],
                                 limit=10,
                                 ampliada=True,
-                                provincia_origen=datos.get('provincia'),
+                                provincia_origen=provincia_busqueda,
                                 palabras_clave_manual=palabras_clave_manual if palabras_clave_manual else None
                             )
 
