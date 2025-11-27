@@ -769,7 +769,7 @@ def calcular_baja_recomendada(bajas):
 
     return baja_recomendada
 
-def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="", limit=10, ampliada=False, provincia_origen=None):
+def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="", limit=10, ampliada=False, provincia_origen=None, palabras_clave_manual=None):
     """Buscar contratos similares con criterios específicos"""
     if isinstance(cpvs, str):
         cpvs = [cpvs]
@@ -881,13 +881,28 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
             return []
 
         # FILTRAR POR SIMILITUD DE PALABRAS CLAVE
-        if titulo_referencia:
-            palabras_objetivo = extraer_palabras_clave(titulo_referencia)
-            st.info(f"🎯 **Palabras clave del objetivo**: {', '.join(sorted(palabras_objetivo))}")
+        if titulo_referencia or palabras_clave_manual:
+            # Usar palabras clave manuales si están disponibles, si no extraerlas automáticamente
+            if palabras_clave_manual:
+                # Procesar palabras clave manuales
+                palabras_objetivo = set([p.strip().lower() for p in palabras_clave_manual.split(',') if p.strip()])
+                st.info(f"🎯 **Palabras clave manuales**: {', '.join(sorted(palabras_objetivo))}")
+            else:
+                palabras_objetivo = extraer_palabras_clave(titulo_referencia)
+                st.info(f"🎯 **Palabras clave extraídas automáticamente**: {', '.join(sorted(palabras_objetivo))}")
 
             # Calcular similitud para cada contrato
             for c in results:
-                c['similitud'] = calcular_similitud_palabras(titulo_referencia, c['titulo'])
+                if palabras_clave_manual:
+                    # Si hay palabras manuales, calcular similitud directamente con ellas
+                    palabras_contrato = extraer_palabras_clave(c['titulo'])
+                    comunes = palabras_objetivo.intersection(palabras_contrato)
+                    if palabras_objetivo and palabras_contrato:
+                        c['similitud'] = len(comunes) / ((len(palabras_objetivo) + len(palabras_contrato)) / 2)
+                    else:
+                        c['similitud'] = 0
+                else:
+                    c['similitud'] = calcular_similitud_palabras(titulo_referencia, c['titulo'])
 
             # FILTRAR: solo contratos con al menos 1 palabra en común
             results_filtrados = [c for c in results if c['similitud'] > 0]
@@ -931,7 +946,11 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
             st.write("**Contratos encontrados (ordenados por relevancia + proximidad + recencia):**")
             for i, c in enumerate(results[:10], 1):
                 fecha_str = str(c['fecha_publicacion'])[:10] if c['fecha_publicacion'] else 'N/A'
-                palabras_comunes = extraer_palabras_clave(titulo_referencia).intersection(extraer_palabras_clave(c['titulo']))
+                # Calcular palabras comunes según el origen de las palabras clave
+                if palabras_clave_manual:
+                    palabras_comunes = palabras_objetivo.intersection(extraer_palabras_clave(c['titulo']))
+                else:
+                    palabras_comunes = extraer_palabras_clave(titulo_referencia).intersection(extraer_palabras_clave(c['titulo']))
                 provincia_str = c.get('provincia', 'N/A')
                 proximidad_icon = "📍" if c.get('proximidad', 0) == 1 else "📌"
 
@@ -1177,13 +1196,14 @@ st.markdown("---")
 # Selector de tipo de fuente
 source_type = st.radio(
     "Selecciona el tipo de fuente:",
-    options=["XML (URL)", "JSON (Archivo)"],
+    options=["XML (URL)", "JSON (Archivo)", "Manual"],
     index=0,
-    help="Elige si quieres analizar desde una URL de XML o subir un archivo JSON"
+    help="Elige si quieres analizar desde una URL de XML, subir un archivo JSON o introducir los datos manualmente"
 )
 
 xml_url = None
 json_file = None
+datos_manuales = None
 
 if source_type == "XML (URL)":
     # Input para URL del XML
@@ -1192,26 +1212,149 @@ if source_type == "XML (URL)":
         placeholder="https://contrataciondelestado.es/FileSystem/servlet/...",
         help="Pega la URL completa del XML"
     )
-else:
+elif source_type == "JSON (Archivo)":
     # File uploader para JSON
     json_file = st.file_uploader(
         "Sube el archivo JSON de la licitación:",
         type=['json'],
         help="Selecciona un archivo JSON que contenga los datos de la licitación"
     )
+else:  # Manual
+    st.markdown("### 📝 Introduce los datos del contrato")
+
+    with st.form("formulario_manual"):
+        st.markdown("#### Datos Generales del Contrato")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            titulo_contrato = st.text_input(
+                "Título del contrato *",
+                placeholder="Ej: Suministro de material de oficina",
+                help="Título completo del contrato"
+            )
+            organismo = st.text_input(
+                "Organismo contratante *",
+                placeholder="Ej: Ayuntamiento de Madrid",
+                help="Nombre del organismo que realiza la contratación"
+            )
+
+        with col2:
+            ubicacion = st.text_input(
+                "Ubicación",
+                placeholder="Ej: Madrid",
+                help="Ciudad o provincia de ejecución"
+            )
+            provincia = st.text_input(
+                "Provincia",
+                placeholder="Ej: Madrid",
+                help="Provincia para búsqueda de contratos cercanos"
+            )
+
+        st.markdown("---")
+        st.markdown("#### Datos del Lote")
+
+        titulo_lote = st.text_input(
+            "Título del lote",
+            placeholder="Ej: Material de oficina (dejar vacío si coincide con el título del contrato)",
+            help="Si el contrato no tiene lotes, dejar vacío"
+        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            presupuesto = st.number_input(
+                "Presupuesto (€) *",
+                min_value=0.0,
+                step=1000.0,
+                format="%.2f",
+                help="Presupuesto base de licitación"
+            )
+
+        with col2:
+            cpv_input = st.text_input(
+                "Código CPV *",
+                placeholder="Ej: 30190000 o 30190000, 30191000",
+                help="Código CPV (puedes introducir varios separados por comas)"
+            )
+
+        st.markdown("#### Criterios de Adjudicación")
+        st.markdown("Introduce los criterios de adjudicación (uno por línea, formato: *Descripción: Peso puntos*)")
+
+        criterios_input = st.text_area(
+            "Criterios",
+            placeholder="Ej:\nOferta económica: 60 puntos\nMejoras técnicas: 30 puntos\nPlazo de entrega: 10 puntos",
+            height=150,
+            help="Un criterio por línea. Formato: Descripción: Peso puntos"
+        )
+
+        submit_manual = st.form_submit_button("✅ Validar Datos", type="primary")
+
+        if submit_manual:
+            # Validar campos obligatorios
+            errores = []
+            if not titulo_contrato:
+                errores.append("El título del contrato es obligatorio")
+            if not organismo:
+                errores.append("El organismo contratante es obligatorio")
+            if presupuesto <= 0:
+                errores.append("El presupuesto debe ser mayor que 0")
+            if not cpv_input:
+                errores.append("El código CPV es obligatorio")
+
+            if errores:
+                for error in errores:
+                    st.error(f"❌ {error}")
+            else:
+                # Procesar CPVs
+                cpvs = [cpv.strip() for cpv in cpv_input.split(',') if cpv.strip()]
+
+                # Procesar criterios
+                criterios = []
+                if criterios_input:
+                    for linea in criterios_input.strip().split('\n'):
+                        if linea.strip():
+                            criterios.append(linea.strip())
+
+                # Crear estructura de datos compatible
+                datos_manuales = {
+                    'titulo': titulo_contrato,
+                    'organismo': organismo,
+                    'ubicacion': ubicacion or 'No especificado',
+                    'provincia': provincia or '',
+                    'lotes': [{
+                        'numero': '1',
+                        'titulo': titulo_lote if titulo_lote else titulo_contrato,
+                        'presupuesto': presupuesto,
+                        'cpv': cpvs,
+                        'criterios': criterios
+                    }]
+                }
+
+                st.success("✅ Datos validados correctamente")
+                st.session_state.datos_manuales = datos_manuales
+
+# Campo de palabras clave manual (disponible para todas las opciones)
+st.markdown("---")
+st.markdown("### 🔑 Palabras Clave para Búsqueda (Opcional)")
+palabras_clave_manual = st.text_input(
+    "Introduce palabras clave específicas para buscar contratos similares",
+    placeholder="Ej: limpieza, jardineria, edificios",
+    help="Separadas por comas. Si lo dejas vacío, se extraerán automáticamente del título del contrato"
+)
 
 if st.button("🚀 Analizar Contrato", type="primary"):
     if source_type == "XML (URL)" and not xml_url:
         st.warning("Por favor, introduce una URL")
     elif source_type == "JSON (Archivo)" and not json_file:
         st.warning("Por favor, sube un archivo JSON")
+    elif source_type == "Manual" and not st.session_state.get('datos_manuales'):
+        st.warning("Por favor, completa y valida el formulario primero")
     else:
         datos = None
 
         if source_type == "XML (URL)":
             with st.spinner("Procesando XML..."):
                 datos = extraer_datos_xml_completo(xml_url)
-        else:
+        elif source_type == "JSON (Archivo)":
             with st.spinner("Procesando JSON..."):
                 try:
                     # Leer el archivo JSON
@@ -1220,13 +1363,21 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 except Exception as e:
                     st.error(f"Error leyendo archivo JSON: {e}")
                     datos = None
+        else:  # Manual
+            datos = st.session_state.get('datos_manuales')
 
         if not datos or not datos['lotes']:
-            source_name = "XML" if source_type == "XML (URL)" else "JSON"
-            st.error(f"No se pudieron extraer lotes del {source_name}")
+            if source_type == "Manual":
+                st.error(f"Error al procesar los datos manuales")
+            else:
+                source_name = "XML" if source_type == "XML (URL)" else "JSON"
+                st.error(f"No se pudieron extraer lotes del {source_name}")
         else:
-            source_name = "XML" if source_type == "XML (URL)" else "JSON"
-            st.success(f"✅ {source_name} procesado - {len(datos['lotes'])} lote(s) encontrado(s)")
+            if source_type == "Manual":
+                st.success(f"✅ Datos manuales procesados - {len(datos['lotes'])} lote(s) encontrado(s)")
+            else:
+                source_name = "XML" if source_type == "XML (URL)" else "JSON"
+                st.success(f"✅ {source_name} procesado - {len(datos['lotes'])} lote(s) encontrado(s)")
 
             # Mostrar datos extraídos
             with st.expander("📋 Datos extraídos del documento"):
@@ -1242,11 +1393,14 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                 st.markdown(f"**Presupuesto:** €{lote['presupuesto']:,.2f}")
                 st.markdown(f"**CPV:** {', '.join(lote['cpv']) if lote['cpv'] else 'No especificado'}")
 
-                # Mostrar palabras clave extraídas del título
-                if lote['titulo']:
+                # Mostrar palabras clave (manuales o automáticas)
+                if palabras_clave_manual:
+                    palabras_mostrar = set([p.strip().lower() for p in palabras_clave_manual.split(',') if p.strip()])
+                    st.markdown(f"**🔑 Palabras clave (manuales):** {', '.join(sorted(palabras_mostrar))}")
+                elif lote['titulo']:
                     palabras_clave = extraer_palabras_clave(lote['titulo'])
                     if palabras_clave:
-                        st.markdown(f"**🔑 Palabras clave del título:** {', '.join(sorted(palabras_clave))}")
+                        st.markdown(f"**🔑 Palabras clave (automáticas):** {', '.join(sorted(palabras_clave))}")
 
                 # Criterios
                 st.markdown("### ⚖️ Criterios de Adjudicación")
@@ -1279,7 +1433,8 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                             titulo_referencia=lote['titulo'],
                             limit=10,
                             ampliada=False,
-                            provincia_origen=datos.get('provincia')
+                            provincia_origen=datos.get('provincia'),
+                            palabras_clave_manual=palabras_clave_manual if palabras_clave_manual else None
                         )
 
                     # Si hay menos de 3 contratos, hacer búsqueda ampliada
@@ -1293,7 +1448,8 @@ if st.button("🚀 Analizar Contrato", type="primary"):
                                 titulo_referencia=lote['titulo'],
                                 limit=10,
                                 ampliada=True,
-                                provincia_origen=datos.get('provincia')
+                                provincia_origen=datos.get('provincia'),
+                                palabras_clave_manual=palabras_clave_manual if palabras_clave_manual else None
                             )
 
                         if len(contratos) < 3:
