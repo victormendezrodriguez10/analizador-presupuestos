@@ -949,17 +949,19 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
             if provincia_origen:
                 provincia_norm = normalizar_texto(provincia_origen)
                 st.info(f"📍 **Provincia de origen**: {provincia_origen}")
+                st.info(f"🔍 **Provincia normalizada para búsqueda**: '{provincia_norm}'")
 
                 # Contador para debug
-                provincias_encontradas = set()
+                provincias_encontradas = {}  # provincia_original: provincia_normalizada
                 contratos_misma_provincia = 0
+                ejemplos_match = []  # Para mostrar ejemplos de matches exitosos
 
                 for c in results:
                     provincia_contrato = c.get('provincia', '')
                     provincia_contrato_norm = normalizar_texto(provincia_contrato)
 
                     if provincia_contrato:
-                        provincias_encontradas.add(provincia_contrato)
+                        provincias_encontradas[provincia_contrato] = provincia_contrato_norm
 
                     # Matching mejorado: coincidencia exacta o subcadena
                     if provincia_contrato_norm and provincia_norm:
@@ -967,23 +969,33 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                         if provincia_contrato_norm == provincia_norm:
                             c['proximidad'] = 1
                             contratos_misma_provincia += 1
+                            if len(ejemplos_match) < 3:
+                                ejemplos_match.append(f"'{provincia_contrato}' → '{provincia_contrato_norm}' ✅ match")
                         # Uno contiene al otro (ej: "Madrid" en "Comunidad de Madrid")
                         elif provincia_norm in provincia_contrato_norm or provincia_contrato_norm in provincia_norm:
                             c['proximidad'] = 1
                             contratos_misma_provincia += 1
+                            if len(ejemplos_match) < 3:
+                                ejemplos_match.append(f"'{provincia_contrato}' → '{provincia_contrato_norm}' ✅ match parcial")
                         else:
                             c['proximidad'] = 0
                     else:
                         c['proximidad'] = 0
 
-                # Mostrar info de debug
+                # Mostrar info de debug detallada
                 if contratos_misma_provincia > 0:
                     st.success(f"✅ **{contratos_misma_provincia} contratos encontrados en {provincia_origen}**")
+                    if ejemplos_match:
+                        st.info(f"🔍 **Ejemplos de matches**: {' | '.join(ejemplos_match)}")
                 else:
                     st.warning(f"⚠️ **No se encontraron contratos en {provincia_origen}**")
                     if provincias_encontradas:
-                        provincias_lista = sorted(list(provincias_encontradas))[:10]
-                        st.info(f"🗺️ **Provincias disponibles**: {', '.join(provincias_lista)}")
+                        # Mostrar las primeras 10 provincias con su normalización
+                        provincias_debug = []
+                        for prov_orig, prov_norm in sorted(list(provincias_encontradas.items()))[:10]:
+                            provincias_debug.append(f"{prov_orig} ('{prov_norm}')")
+                        st.info(f"🗺️ **Provincias en resultados**:\n" + "\n".join([f"- {p}" for p in provincias_debug]))
+                        st.error(f"❌ **Buscando**: '{provincia_norm}' - **No coincide con ninguna**")
             else:
                 # Sin provincia origen, todos tienen misma proximidad
                 for c in results:
@@ -1000,6 +1012,10 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
             # Nivel 3: Solo palabras clave (otras provincias)
             nivel_3 = [c for c in results if c['num_palabras_comunes'] > 0 and c['proximidad'] == 0]
+
+            # Debug de niveles
+            if provincia_origen:
+                st.info(f"📊 **Niveles disponibles**: Nivel 1: {len(nivel_1)}, Nivel 2: {len(nivel_2)}, Nivel 3: {len(nivel_3)}")
 
             # ESTRATEGIA INTELIGENTE: Priorizar SIEMPRE misma provincia si existe
             if len(nivel_1) >= limit:
@@ -1030,6 +1046,15 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 x['num_palabras_comunes'],
                 x['fecha_publicacion'] if x['fecha_publicacion'] else datetime(1900, 1, 1)
             ), reverse=True)
+
+            # Debug: Mostrar los primeros 3 contratos antes de enviar
+            if provincia_origen and len(results_finales) >= 3:
+                st.info("🔍 **Debug - Primeros 3 contratos después de ordenar:**")
+                for idx, c in enumerate(results_finales[:3], 1):
+                    prov = c.get('provincia', 'N/A')
+                    prox = c.get('proximidad', 0)
+                    palabras = c.get('num_palabras_comunes', 0)
+                    st.text(f"  {idx}. Provincia: {prov} | Proximidad: {prox} | Palabras: {palabras}")
 
             st.success(f"✅ **Mostrando los {min(limit, len(results_finales))} contratos más relevantes**")
 
