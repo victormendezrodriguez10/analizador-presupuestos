@@ -920,11 +920,11 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 cpv_patterns.append(cpv_digits[:2])  # 2 dígitos (más amplio)
         st.warning(f"🔄 **Búsqueda ampliada**: CPV primeros 2 dígitos (más flexible)")
     else:
-        # Búsqueda normal: usar primeros 4 dígitos
+        # Búsqueda normal: usar primeros 3 dígitos
         for cpv in cpvs[:3]:
             cpv_digits = ''.join(filter(str.isdigit, str(cpv)))
-            if len(cpv_digits) >= 4:
-                cpv_patterns.append(cpv_digits[:4])  # 4 dígitos
+            if len(cpv_digits) >= 3:
+                cpv_patterns.append(cpv_digits[:3])  # 3 dígitos
 
     if not cpv_patterns:
         st.warning("❌ No se pudieron extraer CPVs válidos")
@@ -936,7 +936,7 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
     if ampliada:
         st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 2 dígitos)")
     else:
-        st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 4 dígitos)")
+        st.info(f"🔍 **Buscando con CPV**: {', '.join(cpv_patterns)} (primeros 3 dígitos)")
 
     cpv_condition = " OR ".join([f"cpv::text ~ '^{cpv}'" for cpv in cpv_patterns])
 
