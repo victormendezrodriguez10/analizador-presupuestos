@@ -1215,7 +1215,7 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                         for prov_orig, prov_norm in sorted(list(provincias_encontradas.items()))[:10]:
                             provincias_debug.append(f"{prov_orig} ('{prov_norm}')")
                         st.info(f"🗺️ **Provincias en resultados**:\n" + "\n".join([f"- {p}" for p in provincias_debug]))
-                        st.error(f"❌ **Buscando**: '{provincia_norm}' - **No coincide con ninguna**")
+                        st.error(f"❌ **Buscando**: '{normalizar_texto(provincia_origen)}' - **No coincide con ninguna**")
             else:
                 # Sin provincia origen, todos tienen misma proximidad
                 for c in results:
