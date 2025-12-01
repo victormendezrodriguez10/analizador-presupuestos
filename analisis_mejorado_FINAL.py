@@ -1051,12 +1051,28 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 palabras_contrato = extraer_palabras_clave(c['titulo'])
 
                 if palabras_clave_manual:
-                    # Si hay palabras manuales, calcular con ellas
-                    comunes = palabras_objetivo.intersection(palabras_contrato)
+                    # Si hay palabras manuales, hacer matching flexible
+                    # Buscar tanto coincidencias exactas como palabras dentro de bigramas
+                    comunes = set()
+
+                    for palabra_objetivo in palabras_objetivo:
+                        # 1. Coincidencia exacta
+                        if palabra_objetivo in palabras_contrato:
+                            comunes.add(palabra_objetivo)
+                        else:
+                            # 2. Buscar si la palabra está dentro de algún bigrama
+                            for palabra_contrato in palabras_contrato:
+                                # Si la palabra del contrato es un bigrama (tiene espacio)
+                                if ' ' in palabra_contrato:
+                                    # Verificar si la palabra objetivo está en el bigrama
+                                    if palabra_objetivo in palabra_contrato.split():
+                                        comunes.add(palabra_objetivo)
+                                        break
+
                     c['num_palabras_comunes'] = len(comunes)
                     c['palabras_comunes'] = comunes
                     if palabras_objetivo and palabras_contrato:
-                        c['similitud'] = len(comunes) / ((len(palabras_objetivo) + len(palabras_contrato)) / 2)
+                        c['similitud'] = len(comunes) / len(palabras_objetivo)  # Porcentaje de palabras objetivo encontradas
                     else:
                         c['similitud'] = 0
                 else:
@@ -1097,11 +1113,66 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 texto = re.sub(r'[^a-z0-9\s]', '', texto)
                 return texto
 
+            # Función para comparar provincias de manera flexible
+            def provincias_coinciden(prov1, prov2):
+                """Compara dos provincias de manera flexible"""
+                if not prov1 or not prov2:
+                    return False
+
+                prov1_norm = normalizar_texto(prov1)
+                prov2_norm = normalizar_texto(prov2)
+
+                # 1. Coincidencia exacta
+                if prov1_norm == prov2_norm:
+                    return True
+
+                # 2. Uno contiene al otro
+                if prov1_norm in prov2_norm or prov2_norm in prov1_norm:
+                    return True
+
+                # 3. Extraer palabras clave de cada provincia
+                # Eliminar palabras comunes geográficas
+                palabras_ignorar = {'provincia', 'comunidad', 'autonoma', 'ciudad', 'de', 'del', 'la', 'las', 'el', 'los'}
+
+                palabras1 = set([p for p in prov1_norm.split() if p not in palabras_ignorar and len(p) > 2])
+                palabras2 = set([p for p in prov2_norm.split() if p not in palabras_ignorar and len(p) > 2])
+
+                # Si alguna palabra clave coincide
+                if palabras1 and palabras2:
+                    if palabras1.intersection(palabras2):
+                        return True
+
+                # 4. Diccionario de provincias bilingües
+                equivalencias = {
+                    'valencia': ['valencia', 'valencia', 'valenciana'],
+                    'alicante': ['alicante', 'alacant'],
+                    'castellon': ['castellon', 'castello'],
+                    'barcelona': ['barcelona'],
+                    'girona': ['girona', 'gerona'],
+                    'lleida': ['lleida', 'lerida'],
+                    'tarragona': ['tarragona'],
+                    'vizcaya': ['vizcaya', 'bizkaia'],
+                    'guipuzcoa': ['guipuzcoa', 'gipuzkoa'],
+                    'alava': ['alava', 'araba'],
+                    'navarra': ['navarra', 'nafarroa'],
+                    'coruna': ['coruna', 'corunha'],
+                    'orense': ['orense', 'ourense'],
+                    'pontevedra': ['pontevedra'],
+                    'lugo': ['lugo'],
+                    'baleares': ['baleares', 'balears', 'illes', 'islas']
+                }
+
+                # Buscar en equivalencias
+                for key, variantes in equivalencias.items():
+                    if any(v in prov1_norm for v in variantes) and any(v in prov2_norm for v in variantes):
+                        return True
+
+                return False
+
             # Calcular proximidad geográfica mejorada
             if provincia_origen:
-                provincia_norm = normalizar_texto(provincia_origen)
                 st.info(f"📍 **Provincia de origen**: {provincia_origen}")
-                st.info(f"🔍 **Provincia normalizada para búsqueda**: '{provincia_norm}'")
+                st.info(f"🔍 **Provincia normalizada para búsqueda**: '{normalizar_texto(provincia_origen)}'")
 
                 # Contador para debug
                 provincias_encontradas = {}  # provincia_original: provincia_normalizada
@@ -1110,27 +1181,16 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
 
                 for c in results:
                     provincia_contrato = c.get('provincia', '')
-                    provincia_contrato_norm = normalizar_texto(provincia_contrato)
 
                     if provincia_contrato:
-                        provincias_encontradas[provincia_contrato] = provincia_contrato_norm
+                        provincias_encontradas[provincia_contrato] = normalizar_texto(provincia_contrato)
 
-                    # Matching mejorado: coincidencia exacta o subcadena
-                    if provincia_contrato_norm and provincia_norm:
-                        # Coincidencia exacta
-                        if provincia_contrato_norm == provincia_norm:
-                            c['proximidad'] = 1
-                            contratos_misma_provincia += 1
-                            if len(ejemplos_match) < 3:
-                                ejemplos_match.append(f"'{provincia_contrato}' → '{provincia_contrato_norm}' ✅ match")
-                        # Uno contiene al otro (ej: "Madrid" en "Comunidad de Madrid")
-                        elif provincia_norm in provincia_contrato_norm or provincia_contrato_norm in provincia_norm:
-                            c['proximidad'] = 1
-                            contratos_misma_provincia += 1
-                            if len(ejemplos_match) < 3:
-                                ejemplos_match.append(f"'{provincia_contrato}' → '{provincia_contrato_norm}' ✅ match parcial")
-                        else:
-                            c['proximidad'] = 0
+                    # Usar función de comparación flexible
+                    if provincias_coinciden(provincia_origen, provincia_contrato):
+                        c['proximidad'] = 1
+                        contratos_misma_provincia += 1
+                        if len(ejemplos_match) < 3:
+                            ejemplos_match.append(f"'{provincia_contrato}' ✅ match con '{provincia_origen}'")
                     else:
                         c['proximidad'] = 0
 
