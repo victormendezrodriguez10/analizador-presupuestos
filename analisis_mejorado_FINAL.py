@@ -1046,37 +1046,45 @@ def buscar_contratos(cpvs, presupuesto_min, presupuesto_max, titulo_referencia="
                 palabras_objetivo = extraer_palabras_clave(titulo_referencia)
                 st.info(f"🎯 **Palabras clave extraídas automáticamente**: {', '.join(sorted(palabras_objetivo))}")
 
+            # Función para normalizar texto (para búsqueda)
+            def normalizar_para_busqueda(texto):
+                if not texto:
+                    return ''
+                texto = texto.lower().strip()
+                # Quitar acentos
+                texto = re.sub(r'[áàäâ]', 'a', texto)
+                texto = re.sub(r'[éèëê]', 'e', texto)
+                texto = re.sub(r'[íìïî]', 'i', texto)
+                texto = re.sub(r'[óòöô]', 'o', texto)
+                texto = re.sub(r'[úùüû]', 'u', texto)
+                return texto
+
             # Calcular palabras coincidentes y similitud para cada contrato
             for c in results:
-                palabras_contrato = extraer_palabras_clave(c['titulo'])
-
                 if palabras_clave_manual:
-                    # Si hay palabras manuales, hacer matching flexible
-                    # Buscar tanto coincidencias exactas como palabras dentro de bigramas
-                    comunes = set()
+                    # BÚSQUEDA DIRECTA EN TÍTULO (sin extraer palabras clave)
+                    # Normalizar título del contrato
+                    titulo_normalizado = normalizar_para_busqueda(c['titulo'])
 
+                    comunes = set()
+                    # Buscar cada palabra manual en el título
                     for palabra_objetivo in palabras_objetivo:
-                        # 1. Coincidencia exacta
-                        if palabra_objetivo in palabras_contrato:
+                        # Normalizar palabra objetivo
+                        palabra_normalizada = normalizar_para_busqueda(palabra_objetivo)
+
+                        # Buscar si la palabra está contenida en el título
+                        if palabra_normalizada in titulo_normalizado:
                             comunes.add(palabra_objetivo)
-                        else:
-                            # 2. Buscar si la palabra está dentro de algún bigrama
-                            for palabra_contrato in palabras_contrato:
-                                # Si la palabra del contrato es un bigrama (tiene espacio)
-                                if ' ' in palabra_contrato:
-                                    # Verificar si la palabra objetivo está en el bigrama
-                                    if palabra_objetivo in palabra_contrato.split():
-                                        comunes.add(palabra_objetivo)
-                                        break
 
                     c['num_palabras_comunes'] = len(comunes)
                     c['palabras_comunes'] = comunes
-                    if palabras_objetivo and palabras_contrato:
-                        c['similitud'] = len(comunes) / len(palabras_objetivo)  # Porcentaje de palabras objetivo encontradas
+                    if palabras_objetivo:
+                        c['similitud'] = len(comunes) / len(palabras_objetivo)  # Porcentaje de palabras encontradas
                     else:
                         c['similitud'] = 0
                 else:
-                    # Usar sistema automático
+                    # Usar sistema automático de extracción de palabras clave
+                    palabras_contrato = extraer_palabras_clave(c['titulo'])
                     comunes = palabras_objetivo.intersection(palabras_contrato)
                     c['num_palabras_comunes'] = len(comunes)
                     c['palabras_comunes'] = comunes
