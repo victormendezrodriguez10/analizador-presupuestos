@@ -579,7 +579,7 @@ def extraer_lote_json(lote_data, numero_lote, titulo_general=''):
         return None
 
 def extraer_palabras_clave(texto):
-    """Extraer palabras clave ESPECÍFICAS más relevantes del título"""
+    """Extraer palabras clave ESPECÍFICAS más relevantes del título (VERSIÓN MEJORADA)"""
     # Normalizar texto
     texto_original = texto.lower()
     texto = re.sub(r'[áàäâ]', 'a', texto_original)
@@ -591,38 +591,158 @@ def extraer_palabras_clave(texto):
 
     palabras = texto.split()
 
-    # Palabras GENÉRICAS a ignorar (ampliado)
+    # Palabras GENÉRICAS a ignorar (reducido - menos agresivo)
     ignorar = {
         # Artículos, preposiciones
         'de', 'del', 'la', 'el', 'los', 'las', 'y', 'a', 'en', 'para', 'con', 'por', 'al', 'un', 'una',
-        # Palabras contractuales
-        'contrato', 'servicio', 'servicios', 'suministro', 'obra', 'obras', 'lote', 'lotes',
+        # Palabras contractuales muy genéricas
+        'contrato', 'servicio', 'servicios', 'suministro', 'lote', 'lotes',
         'mediante', 'procedimiento', 'abierto', 'simplificado', 'menor', 'contratos',
         # Entidades
         'ayuntamiento', 'diputacion', 'municipal', 'concejo', 'consell', 'junta',
-        # Palabras muy genéricas que causan falsos positivos
-        'ampliacion', 'reforma', 'reformas', 'instalacion', 'instalaciones',
-        'mejora', 'mejoras', 'actuacion', 'actuaciones', 'ejecucion', 'ejecutar',
-        'proyecto', 'proyectos', 'trabajos', 'construccion', 'edificio', 'edificios',
-        'electrico', 'electrica', 'electricos', 'electricas',  # Demasiado genérico
-        'mantenimiento', 'conservacion', 'gestion', 'sistema', 'sistemas',
-        'equipos', 'equipo', 'materiales', 'material', 'diversos', 'diversas',
-        'general', 'generales', 'varios', 'varias', 'nuevo', 'nueva', 'nuevos', 'nuevas'
+        # Solo las MÁS genéricas
+        'mejora', 'mejoras', 'actuacion', 'actuaciones',
+        'diversos', 'diversas', 'general', 'generales', 'varios', 'varias'
     }
 
-    # PASO 1: Detectar bigramas (frases de 2 palabras) - más específicos
-    bigramas = []
+    # NUEVO: Bigramas técnicos prioritarios (SIEMPRE se capturan aunque tengan palabras ignoradas)
+    bigramas_tecnicos = {
+        # Dirección y coordinación
+        'direccion obras', 'direccion ejecucion', 'direccion facultativa', 'direccion tecnica',
+        'coordinacion seguridad', 'coordinacion salud', 'asistencia tecnica',
+        # Gestión y sistemas
+        'gestion residuos', 'gestion basuras', 'gestion recursos', 'gestion energetica',
+        'sistema gestion', 'sistema informacion', 'base datos', 'bases datos',
+        # Mantenimiento específico
+        'mantenimiento preventivo', 'mantenimiento correctivo', 'mantenimiento integral',
+        # Instalación específica
+        'instalacion electrica', 'instalacion fotovoltaica', 'instalacion solar',
+        'instalacion climatizacion', 'instalacion alumbrado',
+        # Proyectos específicos
+        'redaccion proyecto', 'redaccion proyectos', 'proyecto ejecucion',
+        # Obras específicas
+        'obras reforma', 'obras ampliacion', 'obras mejora', 'obras construccion',
+        'ejecucion obras', 'control obras', 'supervision obras',
+        # Construcción específica
+        'edificio residencial', 'edificio publico', 'construccion edificio',
+        # Equipos específicos
+        'equipos informaticos', 'equipos electronicos', 'material oficina',
+        # Control y oficina
+        'oficina tecnica', 'control calidad', 'oficina obras'
+    }
+
+    # NUEVO: Palabras contextuales (palabras que se vuelven importantes si van acompañadas)
+    palabras_contextuales = {
+        # Palabra: [palabras que la hacen importante]
+        'obras': ['direccion', 'ejecucion', 'coordinacion', 'control', 'supervision', 'reforma', 'ampliacion', 'construccion'],
+        'proyecto': ['redaccion', 'desarrollo', 'ejecucion', 'basico', 'detallado'],
+        'sistema': ['gestion', 'informacion', 'informatico', 'control', 'seguridad'],
+        'gestion': ['residuos', 'basuras', 'recursos', 'energetica', 'administrativa'],
+        'mantenimiento': ['preventivo', 'correctivo', 'integral', 'instalaciones'],
+        'instalacion': ['electrica', 'fotovoltaica', 'solar', 'climatizacion', 'alumbrado'],
+        'edificio': ['residencial', 'publico', 'oficinas', 'administrativo'],
+        'equipos': ['informaticos', 'electronicos', 'medicos', 'deportivos'],
+        'material': ['oficina', 'escolar', 'sanitario', 'deportivo'],
+        'construccion': ['edificio', 'piscina', 'polideportivo', 'centro'],
+        'ejecucion': ['obras', 'proyecto', 'trabajos'],
+        'direccion': ['obras', 'ejecucion', 'facultativa', 'tecnica', 'proyecto'],
+        'coordinacion': ['seguridad', 'salud', 'obras', 'trabajos'],
+        'redaccion': ['proyecto', 'proyectos', 'memoria', 'informe'],
+        'oficina': ['tecnica', 'obras', 'atencion']
+    }
+
+    # PASO 1: Detectar bigramas técnicos PRIORITARIOS (consecutivos)
+    bigramas_prioritarios = []
+    for i in range(len(palabras) - 1):
+        bigrama = f"{palabras[i]} {palabras[i+1]}"
+        # Si es bigrama técnico, SIEMPRE añadirlo
+        if bigrama in bigramas_tecnicos:
+            bigramas_prioritarios.append(bigrama)
+
+    # PASO 1B: Detectar bigramas técnicos con PALABRAS DE RELLENO (hasta 3 palabras de distancia)
+    # Ejemplo: "direccion de las obras" → detectar "direccion obras"
+    palabras_relleno = {'de', 'del', 'la', 'el', 'los', 'las', 'y', 'a', 'en', 'para', 'con', 'por', 'al', 'un', 'una'}
+    for i in range(len(palabras)):
+        for j in range(i + 2, min(i + 5, len(palabras))):  # Buscar hasta 4 palabras adelante
+            # Verificar que entre i y j solo haya palabras de relleno
+            palabras_entre = palabras[i+1:j]
+            if all(p in palabras_relleno for p in palabras_entre):
+                bigrama_candidato = f"{palabras[i]} {palabras[j]}"
+                if bigrama_candidato in bigramas_tecnicos and bigrama_candidato not in bigramas_prioritarios:
+                    bigramas_prioritarios.append(bigrama_candidato)
+
+    # PASO 2: Detectar bigramas contextuales (palabras que se hacen importantes juntas)
+    bigramas_contextuales = []
+
+    # PASO 2A: Bigramas contextuales consecutivos
+    for i in range(len(palabras) - 1):
+        palabra1 = palabras[i]
+        palabra2 = palabras[i+1]
+
+        # Verificar si palabra1 es contextual y palabra2 la activa
+        if palabra1 in palabras_contextuales:
+            if palabra2 in palabras_contextuales[palabra1]:
+                bigrama = f"{palabra1} {palabra2}"
+                if bigrama not in bigramas_prioritarios:  # Evitar duplicados
+                    bigramas_contextuales.append(bigrama)
+
+        # Verificar al revés (palabra2 contextual, palabra1 la activa)
+        if palabra2 in palabras_contextuales:
+            if palabra1 in palabras_contextuales[palabra2]:
+                bigrama = f"{palabra1} {palabra2}"
+                if bigrama not in bigramas_prioritarios and bigrama not in bigramas_contextuales:
+                    bigramas_contextuales.append(bigrama)
+
+    # PASO 2B: Bigramas contextuales con palabras de relleno en medio
+    for i in range(len(palabras)):
+        for j in range(i + 2, min(i + 5, len(palabras))):
+            palabras_entre = palabras[i+1:j]
+            if all(p in palabras_relleno for p in palabras_entre):
+                palabra1 = palabras[i]
+                palabra2 = palabras[j]
+
+                # Verificar contexto
+                if palabra1 in palabras_contextuales:
+                    if palabra2 in palabras_contextuales[palabra1]:
+                        bigrama = f"{palabra1} {palabra2}"
+                        if bigrama not in bigramas_prioritarios and bigrama not in bigramas_contextuales:
+                            bigramas_contextuales.append(bigrama)
+
+                if palabra2 in palabras_contextuales:
+                    if palabra1 in palabras_contextuales[palabra2]:
+                        bigrama = f"{palabra1} {palabra2}"
+                        if bigrama not in bigramas_prioritarios and bigrama not in bigramas_contextuales:
+                            bigramas_contextuales.append(bigrama)
+
+    # PASO 3: Detectar bigramas normales (sin palabras ignoradas)
+    bigramas_normales = []
     for i in range(len(palabras) - 1):
         if len(palabras[i]) > 3 and len(palabras[i+1]) > 3:
             if palabras[i] not in ignorar and palabras[i+1] not in ignorar:
                 bigrama = f"{palabras[i]} {palabras[i+1]}"
-                bigramas.append(bigrama)
+                # No duplicar si ya está en prioritarios o contextuales
+                if bigrama not in bigramas_prioritarios and bigrama not in bigramas_contextuales:
+                    bigramas_normales.append(bigrama)
 
-    # PASO 2: Filtrar palabras individuales (más de 5 letras y no genéricas)
-    palabras_individuales = [p for p in palabras if len(p) > 5 and p not in ignorar]
+    # Unir todos los bigramas (prioritarios primero, luego contextuales, luego normales)
+    bigramas = bigramas_prioritarios + bigramas_contextuales + bigramas_normales
 
-    # PASO 3: Detectar palabras NÚCLEO (muy específicas de la actividad)
-    # Estas son palabras que por sí solas identifican claramente la actividad
+    # PASO 4: Palabras individuales contextuales (palabras que aparecen en bigramas contextuales)
+    palabras_de_bigramas_contextuales = set()
+    for bigrama in bigramas_contextuales:
+        for palabra in bigrama.split():
+            if len(palabra) > 4:  # Solo palabras significativas
+                palabras_de_bigramas_contextuales.add(palabra)
+
+    # PASO 5: Filtrar palabras individuales (más de 4 letras - menos restrictivo)
+    palabras_individuales = []
+    for p in palabras:
+        if len(p) > 4:
+            # Incluir si NO está ignorada O si está en bigramas contextuales
+            if p not in ignorar or p in palabras_de_bigramas_contextuales:
+                palabras_individuales.append(p)
+
+    # PASO 6: Detectar palabras NÚCLEO (muy específicas de la actividad) - AMPLIADO
     palabras_nucleo = []
 
     # Palabras específicas de actividades (no genéricas)
@@ -645,35 +765,48 @@ def extraer_palabras_clave(texto):
         'residencia', 'colegio', 'escuela', 'hospital', 'centro', 'parque',
         # Servicios públicos específicos
         'residuos', 'basuras', 'reciclaje', 'contenedores', 'recogida',
-        'abastecimiento', 'depuracion', 'potabilizacion', 'saneamiento'
+        'abastecimiento', 'depuracion', 'potabilizacion', 'saneamiento',
+        # NUEVAS: Técnicas y profesionales
+        'facultativo', 'redaccion', 'direccion', 'coordinacion', 'supervision',
+        'preventivo', 'correctivo', 'integral', 'tecnica', 'tecnicos'
     }
 
     for palabra in palabras_individuales:
         if palabra in palabras_especificas:
             palabras_nucleo.append(palabra)
 
-    # PASO 4: Seleccionar las mejores palabras clave
+    # PASO 7: Seleccionar las mejores palabras clave (hasta 5 en lugar de 3)
     palabras_finales = set()
 
-    # Prioridad 1: Bigramas (muy específicos)
-    if bigramas:
-        # Tomar el primer bigrama encontrado (suele ser el más relevante)
-        palabras_finales.add(bigramas[0])
+    # Prioridad 1: Bigramas técnicos prioritarios (los más importantes)
+    for bigrama in bigramas_prioritarios[:2]:  # Hasta 2 bigramas técnicos
+        palabras_finales.add(bigrama)
 
-    # Prioridad 2: Palabras núcleo (específicas de actividad)
+    # Prioridad 2: Bigramas contextuales
+    for bigrama in bigramas_contextuales[:2]:  # Hasta 2 bigramas contextuales
+        if len(palabras_finales) >= 5:
+            break
+        palabras_finales.add(bigrama)
+
+    # Prioridad 3: Palabras núcleo (específicas de actividad)
     if palabras_nucleo:
-        # Tomar hasta 2 palabras núcleo
-        for palabra in palabras_nucleo[:2]:
+        for palabra in palabras_nucleo[:3]:  # Hasta 3 palabras núcleo
+            if len(palabras_finales) >= 5:
+                break
             palabras_finales.add(palabra)
 
-    # Prioridad 3: Si no hay suficientes, añadir las palabras individuales más largas
-    # (las palabras más largas suelen ser más específicas)
-    if len(palabras_finales) < 3:
+    # Prioridad 4: Bigramas normales
+    if len(palabras_finales) < 5 and bigramas_normales:
+        palabras_finales.add(bigramas_normales[0])
+
+    # Prioridad 5: Palabras individuales más largas (si faltan)
+    if len(palabras_finales) < 5:
         palabras_ordenadas = sorted(palabras_individuales, key=len, reverse=True)
         for palabra in palabras_ordenadas:
-            if len(palabras_finales) >= 3:
+            if len(palabras_finales) >= 5:
                 break
-            if palabra not in ' '.join(palabras_finales):  # Evitar duplicados
+            # Evitar duplicados (que la palabra no esté ya en un bigrama)
+            if palabra not in ' '.join(palabras_finales):
                 palabras_finales.add(palabra)
 
     return palabras_finales
